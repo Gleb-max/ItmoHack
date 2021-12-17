@@ -49,17 +49,17 @@ type AuthViewProps = {
 
 type AuthFields = {
   login: {
-    nickNameOrEmail: string;
+    isuId: string;
     password: string;
   };
   register: {
+    isuId: string;
     name: string;
-    nickName: string;
-    email: string;
+    faculty: string;
     password: string;
   };
   restore: {
-    email: string;
+    isuId: string;
   };
 };
 
@@ -75,17 +75,17 @@ let deque: number[] = [];
 
 const authFieldsContent: AuthFields = {
   login: {
-    nickNameOrEmail: '',
+    isuId: '',
     password: '',
   },
   register: {
+    isuId: '',
     name: '',
-    nickName: '',
-    email: '',
+    faculty: '',
     password: '',
   },
   restore: {
-    email: '',
+    isuId: '',
   },
 };
 
@@ -112,7 +112,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
   //auth
   const loginHandler = () => {
     const data = authFieldsContent.login;
-    if (data.nickNameOrEmail && data.password) {
+    if (data.isuId && data.password) {
       login(data);
     } else {
       requireFilling();
@@ -121,7 +121,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   const registerHandler = () => {
     const data = authFieldsContent.register;
-    if (data.name && data.nickName && data.email && data.password) {
+    if (data.isuId && data.name && data.faculty && data.password) {
       register(data);
     } else {
       requireFilling();
@@ -130,7 +130,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   const restoreHandler = () => {
     const data = authFieldsContent.restore;
-    if (data.email) {
+    if (data.isuId) {
       restore(data);
     } else {
       requireFilling();
@@ -214,7 +214,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         <AppFeatureImage logo={item.image} style={styles.imageWelcome} />
         <View style={styles.contentContainer}>
           <AppFeatureText
-            text={'Теперь ваш питомец будет под нашей защитой'}
+            text={'Победа факультета зависит только от тебя. Вперёд!'}
             textStyle={styles.text}
           />
           <View style={styles.authButtonsContainer}>
@@ -243,17 +243,17 @@ export const AuthView: React.FC<AuthViewProps> = ({
         <View style={styles.authFormContainer}>
           <View style={styles.titleGroup}>
             <AuthTitle text={'Вход'} style={styles.title} />
-            <AuthImage logo={item.image} style={styles.imageLogin} />
+            {/* <AuthImage logo={item.image} style={styles.imageLogin} /> */}
           </View>
           <AuthForm style={styles.authForm}>
             <CustomTextInput
-              value={authFieldsContent.login.nickNameOrEmail}
+              value={authFieldsContent.login.isuId}
               onChange={(text: string) => {
-                authFieldsContent.login.nickNameOrEmail = text;
+                authFieldsContent.login.isuId = text;
               }}
               style={styles.authField}
               renderType={'clear'}
-              placeholder={'Ваш никнейм или почта'}
+              placeholder={'Ваш ISU ID'}
             />
             <CustomTextInput
               value={authFieldsContent.login.password}
@@ -296,9 +296,19 @@ export const AuthView: React.FC<AuthViewProps> = ({
         <View style={styles.authFormContainer}>
           <View style={styles.titleGroup}>
             <AuthTitle text={'Регистрация'} style={styles.title} />
-            <AuthImage logo={item.image} style={styles.imageRegister} />
+            {/* <AuthImage logo={item.image} style={styles.imageRegister} /> */}
           </View>
           <AuthForm style={styles.authForm}>
+            <CustomTextInput
+              value={authFieldsContent.register.isuId}
+              autoCapitalize={'sentences'}
+              onChange={(text: string) => {
+                authFieldsContent.register.isuId = text;
+              }}
+              style={styles.authField}
+              renderType={'clear'}
+              placeholder={'Ваш ISU ID'}
+            />
             <CustomTextInput
               value={authFieldsContent.register.name}
               autoCapitalize={'sentences'}
@@ -310,20 +320,10 @@ export const AuthView: React.FC<AuthViewProps> = ({
               placeholder={'Ваше имя'}
             />
             <CustomTextInput
-              value={authFieldsContent.register.nickName}
+              value={authFieldsContent.register.faculty}
               autoCapitalize={'sentences'}
               onChange={(text: string) => {
-                authFieldsContent.register.nickName = text;
-              }}
-              style={styles.authField}
-              renderType={'clear'}
-              placeholder={'Ваш никнейм'}
-            />
-            <CustomTextInput
-              value={authFieldsContent.register.email}
-              autoCapitalize={'sentences'}
-              onChange={(text: string) => {
-                authFieldsContent.register.email = text;
+                authFieldsContent.register.faculty = text;
               }}
               style={styles.authField}
               keyboardType={'email-address'}
@@ -371,15 +371,15 @@ export const AuthView: React.FC<AuthViewProps> = ({
           />
           <AuthForm style={styles.authForm}>
             <CustomTextInput
-              value={authFieldsContent.restore.email}
+              value={authFieldsContent.restore.isuId}
               autoCapitalize={'sentences'}
               onChange={(text: string) => {
-                authFieldsContent.restore.email = text;
+                authFieldsContent.restore.isuId = text;
               }}
               style={styles.authField}
               keyboardType={'email-address'}
               renderType={'clear'}
-              placeholder={'Ваша почта'}
+              placeholder={'Ваш ISU ID'}
             />
           </AuthForm>
         </View>

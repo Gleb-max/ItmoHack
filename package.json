@@ -23,7 +23,7 @@
     "refresh": "rm -rf node_modules && yarn",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "./.patch/script-patch.sh"
+    "postinstall": "./.patch/script-patch.sh && rm -rf ../../gl-matrix/.babelrc"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.13.3",

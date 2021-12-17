@@ -11,7 +11,7 @@ export const register = (payload: any) => {
     formData.append('email', payload.email);
     formData.append('password', payload.password);
 
-    API.post('client/registration/', formData, {})
+    API.post('api/auth/register', formData, {})
       .then((response) => {
         console.log(response.data.token);
         dispatch({
@@ -60,7 +60,7 @@ export const login = (payload: any) => {
     formData.append('login', payload.nickNameOrEmail);
     formData.append('password', payload.password);
 
-    API.post('client/login/', formData, {})
+    API.post('api/auth/token/', formData, {})
       .then((response) => {
         console.log(response.data.token);
         dispatch({

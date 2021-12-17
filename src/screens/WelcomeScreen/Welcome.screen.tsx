@@ -13,28 +13,28 @@ import {WelcomeView, AppFeaturesItem} from './Welcome.view';
 //types
 type WelcomeScreenProps = {};
 
-import image1 from '@assets/images/appFeatures/1/image.png';
-import image2 from '@assets/images/appFeatures/2/image.png';
-import image3 from '@assets/images/appFeatures/3/image.png';
-import image4 from '@assets/images/appFeatures/4/image.png';
+import image1 from '@assets/images/appFeatures/1/image.jpg';
+import image2 from '@assets/images/appFeatures/2/image.jpg';
+import image3 from '@assets/images/appFeatures/3/image.jpg';
+import image4 from '@assets/images/appFeatures/4/image.jpg';
 
 //constants
 const appFeaturesInfo: AppFeaturesItem[] = [
   {
     image: image1,
-    content: 'Счастлив питомец, счастливы вы!',
+    content: 'Любое достижение достойно внимания!',
   },
   {
     image: image2,
-    content: 'Вся информация о вашем друге в одном месте',
+    content: 'Регистрируй свои достижения',
   },
   {
     image: image3,
-    content: 'Быстрая связь с ветеринаром и поиск ветклиник',
+    content: 'Получай игровые баллы',
   },
   {
     image: image4,
-    content: 'Составление рациона и советы по подбору корма',
+    content: 'Побеждай в битве факультетов',
   },
 ];
 
