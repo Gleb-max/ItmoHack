@@ -14,7 +14,8 @@
 
         public int SoftSkills { get; set; }
 
-        public User Owner { get; set;}
+        public long Points { get => Physical + Technical + Humanities + Natural + SoftSkills; }
+
         public Guid OwnerId { get; set; }
     }
 }

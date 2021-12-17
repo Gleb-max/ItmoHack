@@ -6,7 +6,7 @@ namespace ICT.HACK.Storage.Abstractions
     {
         public DbSet<T> Query();
 
-        public Task<T> GetByIdAsync(int id);
+        public Task<T> FindAsync(object arg);
 
         public Task AddAsync(T entity);
 

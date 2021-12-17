@@ -1,3 +1,4 @@
+using ICT.HACK.Extensions;
 using ICT.HACK.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -35,9 +36,9 @@ namespace ICT.HACK
                     options.RequireHttpsMetadata = true;
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
-                        ValidAudience = Configuration["JwtBearer:Audience"],
-                        ValidIssuer = Configuration["JwtBearer:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtBearer:SymmetricKey"])),
+                        ValidAudience = Configuration["JwtOptions:Audience"],
+                        ValidIssuer = Configuration["JwtOptions:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtOptions:SymmetricKey"])),
 
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -45,17 +46,19 @@ namespace ICT.HACK
                     };
                 });
 
+            services.AddPasswordHasher();
+
+            services.AddRepositories();
+            services.AddRoles();
+
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
         }
 
         public static void Configure(WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 

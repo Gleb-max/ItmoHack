@@ -30,10 +30,10 @@ namespace ICT.HACK.Storage.Repositories
             set.Update(entity);
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> FindAsync(object arg)
         {
             var set = _context.Set<T>();
-            return await set.FindAsync(id);
+            return await set.FindAsync(arg);
         }
 
         public DbSet<T> Query()
