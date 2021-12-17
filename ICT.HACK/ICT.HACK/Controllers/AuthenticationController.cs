@@ -33,16 +33,18 @@ namespace ICT.HACK.Controllers
             if (ModelState.IsValid == false)
                 return BadRequest(ModelState);
 
-            User user = await userRepository.Query().Include(u => u.Role).FirstOrDefaultAsync(u => u.ISUId == loginData.ISUId);
+            User user = await userRepository.Query()
+                                            .Include(u => u.Role)
+                                            .FirstOrDefaultAsync(u => u.ISUId == loginData.ISUId);
             if (user == null)
             {
-                ModelState.AddModelError(nameof(loginData), "Пользователь не найден.");
+                ModelState.AddModelError("Message", "Пользователь не найден.");
                 return BadRequest(ModelState);
             }
 
             if(((int)passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginData.Password)) != 1)
             {
-                ModelState.AddModelError(nameof(loginData), "Неверный пароль.");
+                ModelState.AddModelError("Message", "Неверный пароль.");
                 return BadRequest(ModelState);
             }
 
@@ -52,13 +54,13 @@ namespace ICT.HACK.Controllers
             var nowTime = DateTime.Now;
 
             var jwt = new JwtSecurityToken(
-                issuer: Program.Configuration["Jwt:Issuer"],
-                audience: Program.Configuration["Jwt:Audience"],
+                issuer: Program.Configuration["JwtOptions:Issuer"],
+                audience: Program.Configuration["JwtOptions:Audience"],
                 notBefore: DateTime.Now,
                 claims: identity.Claims,
                 expires: nowTime.Add(TimeSpan.FromDays(7)),
                 signingCredentials: credentials);
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return Ok(encodedJwt);
         }
@@ -73,7 +75,7 @@ namespace ICT.HACK.Controllers
                 new Claim(Program.Configuration["UserClaims:Role"], user.Role.Name)
             };
 
-            var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme, Program.Configuration["UserClaims:ISUId"], Program.Configuration["UserClaims:Role"]);
+            var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme, Program.Configuration["UserClaims:Name"], Program.Configuration["UserClaims:Role"]);
 
             return identity;
         }

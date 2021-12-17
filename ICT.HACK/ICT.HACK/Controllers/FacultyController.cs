@@ -27,12 +27,21 @@ namespace ICT.HACK.Controllers
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
-            Guid guid = Guid.Parse(id);
-            Faculty faculty = await facultyRepository.FindAsync(guid);
-            if(faculty == null)
-                return NotFound();
+            if (Guid.TryParse(id, out var guid) == false)
+            {
+                ModelState.AddModelError("Message", "Неверный формат id.");
+                return BadRequest(ModelState);
+            }
 
-            IQueryable<User> students = userRepository.Query().Include(u => u.Statistics).Where(u => u.FacultyId == faculty.Id);
+            Faculty faculty = await facultyRepository.FindAsync(guid);
+            if (faculty == null)
+            {
+                return NotFound();
+            }
+
+            IQueryable<User> students = userRepository.Query()
+                                                      .Include(u => u.Statistics)
+                                                      .Where(u => u.FacultyId == faculty.Id);
 
             FacultyResponse response = new FacultyResponse()
             {
@@ -64,15 +73,15 @@ namespace ICT.HACK.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult> PostAsync([FromBody] FacultyRequest facultyData)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
-            Faculty faculty = await facultyRepository.Query().FirstOrDefaultAsync(f => f.Name == facultyData.Name);
-            if(faculty != null)
+            bool isFacultyExist = await facultyRepository.Query().AnyAsync(f => f.Name == facultyData.Name);
+            if (isFacultyExist)
             {
-                ModelState.AddModelError(nameof(facultyData.Name), "Факультет с таким названием уже существует.");
+                ModelState.AddModelError("Message", "Факультет с таким названием уже существует.");
                 return BadRequest(ModelState);
             }
 
@@ -89,18 +98,24 @@ namespace ICT.HACK.Controllers
 
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<ActionResult> PutAsync(string id, [FromBody] FacultyRequest facultyData)
+        public async Task<ActionResult> PutAsync(string id, [FromBody] EditFacultyRequest facultyData)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
-            Guid guid = Guid.Parse(id);
-            var faculty = await facultyRepository.FindAsync(guid);
-            if (faculty == null)
-                return NotFound();
-            
+            if (Guid.TryParse(id, out var guid) == false)
+            {
+                ModelState.AddModelError("Message", "Неверный формат id.");
+                return BadRequest(ModelState);
+            }
 
-            faculty.Name = facultyData.Name;
-            faculty.Description = facultyData.Description;
+            Faculty faculty = await facultyRepository.FindAsync(guid);
+            if (faculty == null)
+            {
+                return NotFound();
+            }
+
+            faculty.Name = facultyData.Name == null ? faculty.Name : facultyData.Name;
+            faculty.Description = facultyData.Description == null ? faculty.Description : facultyData.Description;
 
             facultyRepository.Edit(faculty);
             await facultyRepository.SaveAsync();
@@ -114,10 +129,17 @@ namespace ICT.HACK.Controllers
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
-            Guid guid = Guid.Parse(id);
+            if (Guid.TryParse(id, out var guid) == false)
+            {
+                ModelState.AddModelError("Message", "Неверный формат id.");
+                return BadRequest(ModelState);
+            }
+
             var faculty = await facultyRepository.FindAsync(guid);
-            if(faculty == null)
+            if (faculty == null)
+            { 
                 return NotFound();
+            }
 
             facultyRepository.Delete(faculty);
             await facultyRepository.SaveAsync();

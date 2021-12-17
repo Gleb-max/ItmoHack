@@ -1,9 +1,9 @@
 ﻿namespace ICT.HACK.ViewModels.Request
 {
-    public class EditUserRequest
+    public class EditFacultyRequest
     {
         public string? Name { get; set; }
 
-        public string? FacultyId { get; set; }
+        public string? Description { get; set; }
     }
 }
