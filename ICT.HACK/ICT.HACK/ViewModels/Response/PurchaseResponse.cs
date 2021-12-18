@@ -12,10 +12,10 @@
 
         public int ProductPrice { get; set; }
 
-        public string ProductId { get; set; }
+        public Guid ProductId { get; set; }
 
         public string BuyerName { get; set; }
 
-        public string BuyerId { get; set; }
+        public Guid BuyerId { get; set; }
     }
 }

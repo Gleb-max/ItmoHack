@@ -16,6 +16,8 @@ namespace ICT.HACK.Models
 
         public int Balance { get; set; }
 
+        public int PlaysCount { get; set; }
+
         public IEnumerable<Achievement> Achievements { get; set; }
 
         public IEnumerable<AchievementRequest> AchievementsRequests { get; set; }

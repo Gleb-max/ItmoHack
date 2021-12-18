@@ -12,7 +12,7 @@ using System.Text;
 
 namespace ICT.HACK.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/Auth")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {

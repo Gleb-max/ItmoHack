@@ -101,14 +101,13 @@ namespace ICT.HACK
                 });
             });
 
-            string wwwroot = Program.Configuration[WebHostDefaults.ContentRootKey];
-            string path = Path.Combine(wwwroot, "wwwroot", "qr.jpg");
-            QRGenerator qrGen = new QRGenerator();
-            qrGen.SaveQRAsync(path, "Igor gay").Wait();
+            services.AddQRGenerator();
         }
 
         public static void Configure(WebApplication app)
         {
+            app.UseDeveloperExceptionPage();
+
             app.UseSwagger();
             app.UseSwaggerUI();
 

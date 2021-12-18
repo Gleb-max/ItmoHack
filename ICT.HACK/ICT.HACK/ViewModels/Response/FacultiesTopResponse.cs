@@ -5,7 +5,7 @@
         public IEnumerable<FacultyInTopResponse> Faculties { get; set; }
         public class FacultyInTopResponse
         {
-            public string Id { get; set; }
+            public Guid Id { get; set; }
 
             public string Name { get; set; }
 

@@ -80,8 +80,8 @@ namespace ICT.HACK.Storage
             {
                 e.HasKey(a => a.Id);
                 e.Property(a => a.Id).HasDefaultValueSql("NEWID()");
-                e.HasOne(a => a.Advertisement).WithMany().HasForeignKey(a => a.AdvertisementId);
-                e.HasOne(a => a.Creator).WithMany().HasForeignKey(a => a.CreatorId);
+                e.HasOne(a => a.Advertisement).WithMany(a => a.Applications).HasForeignKey(a => a.AdvertisementId);
+                e.HasOne(a => a.Creator).WithMany().HasForeignKey(a => a.CreatorId).OnDelete(DeleteBehavior.NoAction);
             });
 
             base.OnModelCreating(modelBuilder);

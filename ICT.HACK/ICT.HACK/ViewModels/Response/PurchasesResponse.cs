@@ -6,7 +6,7 @@
 
         public class ShortPurchasesResponse
         {
-            public string Id { get; set; }
+            public Guid Id { get; set; }
 
             public DateTime Date { get; set; }
 

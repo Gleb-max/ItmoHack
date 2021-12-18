@@ -4,7 +4,7 @@ namespace ICT.HACK.ViewModels.Response
 {
     public class AchievementResponse
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 
@@ -20,6 +20,6 @@ namespace ICT.HACK.ViewModels.Response
 
         public string OwnerISUId { get; set; }
 
-        public string OwnerId { get; set; }
+        public Guid OwnerId { get; set; }
     }
 }

@@ -9,11 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ICT.HACK.Controllers
 {
-    [Route("api/faculty")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize("Everyone")]
     public class FacultyController : ControllerBase
     {
+        private const int CountFacultyOnPage = 10;
+
         private readonly IServiceProvider _serviceProvider;
 
         public FacultyController(IServiceProvider serviceProvider)
@@ -22,18 +24,12 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FacultyResponse>> GetAsync([FromRoute] string id)
+        public async Task<ActionResult<FacultyResponse>> GetAsync([FromRoute] Guid id)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            Faculty faculty = await facultyRepository.FindAsync(guid);
+            Faculty faculty = await facultyRepository.FindAsync(id);
             if (faculty == null)
             {
                 return NotFound();
@@ -64,7 +60,13 @@ namespace ICT.HACK.Controllers
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
-            IEnumerable<Faculty> faculties = facultyRepository.Query().AsEnumerable();
+            IEnumerable<Faculty> faculties = facultyRepository.Query()
+                                                              .Select(f => new Faculty()
+                                                              {
+                                                                  Id = f.Id,
+                                                                  Name = f.Name
+                                                              })
+                                                              .AsEnumerable();
             FacultiesResponse response = new FacultiesResponse() { Faculties = faculties };
 
             return Ok(response);
@@ -72,7 +74,7 @@ namespace ICT.HACK.Controllers
 
         [HttpGet]
         [Route("top")]
-        public ActionResult<FacultiesTopResponse> GetTop()
+        public ActionResult<FacultiesTopResponse> GetTop([FromQuery] int page)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
@@ -80,7 +82,7 @@ namespace ICT.HACK.Controllers
                                              .Include(f => f.Students)
                                              .Select(f => new FacultiesTopResponse.FacultyInTopResponse()
                                              {
-                                                 Id = f.Id.ToString(),
+                                                 Id = f.Id,
                                                  Name = f.Name,
                                                  Points = f.Students.Sum(s => s.Statistics.Physical +
                                                                               s.Statistics.Technical +
@@ -88,6 +90,8 @@ namespace ICT.HACK.Controllers
                                                                               s.Statistics.Natural +
                                                                               s.Statistics.SoftSkills)
                                              })
+                                             .Skip(CountFacultyOnPage * page)
+                                             .Take(CountFacultyOnPage)
                                              .AsEnumerable();
             var response = new FacultiesTopResponse { Faculties = faculties };
 
@@ -119,22 +123,16 @@ namespace ICT.HACK.Controllers
             await facultyRepository.AddAsync(newFaculty);
             await facultyRepository.SaveAsync();
 
-            return Ok();
+            return Ok(newFaculty.Id);
         }
 
         [HttpPut("{id}")]
         [Authorize("Admin")]
-        public async Task<ActionResult> PutAsync([FromRoute] string id, [FromBody] EditFacultyRequest facultyData)
+        public async Task<ActionResult> PutAsync([FromRoute] Guid id, [FromBody] EditFacultyRequest facultyData)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            Faculty faculty = await facultyRepository.FindAsync(guid);
+            Faculty faculty = await facultyRepository.FindAsync(id);
             if (faculty == null)
             {
                 return NotFound();
@@ -151,17 +149,11 @@ namespace ICT.HACK.Controllers
 
         [HttpDelete("{id}")]
         [Authorize("Admin")]
-        public async Task<IActionResult> DeleteAsync([FromRoute] string id)
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            var faculty = await facultyRepository.FindAsync(guid);
+            var faculty = await facultyRepository.FindAsync(id);
             if (faculty == null)
             {
                 return NotFound();

@@ -29,9 +29,12 @@ namespace ICT.HACK.Controllers
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
+            if(searchOptions.Page >= MaxPagesInTop)
+                return NoContent();
+
             IQueryable<User> query = userRepository.Query().Include(u => u.Faculty);
             if (searchOptions.InFaculty)
-                query = query.Where(u => u.FacultyId.ToString() == searchOptions.FacultyId);
+                query = query.Where(u => u.FacultyId == searchOptions.FacultyId);
             query = query.OrderByDescending(u => (u.Statistics.Physical +
                                                   u.Statistics.Technical +
                                                   u.Statistics.Humanities +
@@ -59,7 +62,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserResponse>> GetAsync([FromRoute] string id)
+        public async Task<ActionResult<UserResponse>> GetAsync([FromRoute] Guid id)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
@@ -67,13 +70,13 @@ namespace ICT.HACK.Controllers
                                             .Include(u => u.Role)
                                             .Include(u => u.Statistics)
                                             .Include(u => u.Faculty)
-                                            .FirstOrDefaultAsync(u => u.Id.ToString() == id);
+                                            .FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
                 return NotFound();
 
             UserResponse response = new UserResponse()
             {
-                Id = user.Id.ToString(),
+                Id = user.Id,
                 ISUId = user.ISUId,
                 Name = user.Name,
                 Faculty = user.Faculty.Name,
@@ -102,12 +105,6 @@ namespace ICT.HACK.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (Guid.TryParse(registrationData.FacultyId, out var facultyGuid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат facultyId.");
-                return BadRequest(ModelState);
-            }
-
             bool isUserExist = await userRepository.Query().AnyAsync(u => u.ISUId == registrationData.ISUId);
             if (isUserExist)
             {
@@ -115,7 +112,7 @@ namespace ICT.HACK.Controllers
                 return BadRequest(ModelState);
             }
 
-            Faculty faculty = await facultyRepository.FindAsync(facultyGuid);
+            Faculty faculty = await facultyRepository.FindAsync(registrationData.FacultyId);
             if (faculty == null)
             {
                 ModelState.AddModelError("Message", "Такого факультета не существует.");
@@ -144,23 +141,17 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync([FromRoute] string id, [FromBody] EditUserRequest editData)
+        public async Task<ActionResult> PutAsync([FromRoute] Guid id, [FromBody] EditUserRequest editData)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
-            if ((string.Equals(User.FindFirst(Program.Configuration["UserClaims:Id"])?.Value, id, StringComparison.OrdinalIgnoreCase) == false) && (User.IsInRole("Admin") == false))
+            if ((string.Equals(User.FindFirst(Program.Configuration["UserClaims:Id"])?.Value, id.ToString(), StringComparison.OrdinalIgnoreCase) == false) && (User.IsInRole("Admin") == false))
             {
                 ModelState.AddModelError("Message", "Вы не можете изменять данные другого пользователя.");
                 return BadRequest(ModelState);
             }
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            User user = await userRepository.FindAsync(guid);
+            User user = await userRepository.FindAsync(id);
             if (user == null)
                 return NotFound();
 
@@ -168,7 +159,7 @@ namespace ICT.HACK.Controllers
             if (editData.FacultyId != null)
             {
                 var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
-                Faculty faculty = await facultyRepository.FindAsync(Guid.Parse(editData.FacultyId));
+                Faculty faculty = await facultyRepository.FindAsync(editData.FacultyId);
                 if (faculty == null)
                 {
                     ModelState.AddModelError("Message", "Не найден факультет с таким id.");
@@ -184,23 +175,17 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
-            if ((string.Equals(User.FindFirst(Program.Configuration["UserClaims:Id"])?.Value, id, StringComparison.OrdinalIgnoreCase) == false) && (User.IsInRole("Admin") == false))
+            if ((string.Equals(User.FindFirst(Program.Configuration["UserClaims:Id"])?.Value, id.ToString(), StringComparison.OrdinalIgnoreCase) == false) && (User.IsInRole("Admin") == false))
             {
                 ModelState.AddModelError("Message", "Вы не можете удалить чужой профиль.");
                 return BadRequest(ModelState);
             }
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            User user = await userRepository.FindAsync(guid);
+            User user = await userRepository.FindAsync(id);
             if (user == null)
             {
                 return NotFound();

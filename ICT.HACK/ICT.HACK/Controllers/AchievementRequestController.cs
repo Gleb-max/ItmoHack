@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ICT.HACK.Controllers
 {
-    [Route("api/requests")]
+    [Route("api/Requests")]
     [ApiController]
     [Authorize("Everyone")]
     public class AchievementRequestController : ControllerBase
@@ -54,12 +54,12 @@ namespace ICT.HACK.Controllers
 
             var requests = query.Select(a => new AchievementRequestsResponse.ShortAchievementRequestResponse()
             {
-                Id = a.Id.ToString(),
+                Id = a.Id,
                 Name = a.Name,
                 Points = a.Points,
                 Accepted = a.Accepted,
                 OwnerName = a.Owner.Name,
-                OwnerId = a.OwnerId.ToString()
+                OwnerId = a.OwnerId
             });
 
             var response = new AchievementRequestsResponse() { AchievementRequests = requests };
@@ -68,19 +68,13 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AchievementRequestResponse>> GetAsync([FromRoute] string id)
+        public async Task<ActionResult<AchievementRequestResponse>> GetAsync([FromRoute] Guid id)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
             AchievementRequest request = await achievementRequestRepository.Query()
                                                                            .Include(a => a.Owner)
-                                                                           .FirstOrDefaultAsync(a => a.Id.ToString() == id);
+                                                                           .FirstOrDefaultAsync(a => a.Id == id);
             if (request == null)
             {
                 return NotFound();
@@ -88,14 +82,14 @@ namespace ICT.HACK.Controllers
 
             var response = new AchievementRequestResponse()
             {
-                Id = request.Id.ToString(),
+                Id = request.Id,
                 Name = request.Name,
                 Description = request.Description,
                 Points = request.Points,
                 ProofLink = request.ProofLink, 
                 Accepted = request.Accepted,
                 OwnerName = request.Owner.Name,
-                OwnerId = request.OwnerId.ToString()
+                OwnerId = request.OwnerId
             };
             
             return Ok(response);
@@ -113,7 +107,7 @@ namespace ICT.HACK.Controllers
                 return BadRequest(ModelState);
             }
 
-            AchievementRequest request = new AchievementRequest()
+            var request = new AchievementRequest()
             {
                 Name = achievementRequestData.Name,
                 Description = achievementRequestData.Description,
@@ -126,21 +120,15 @@ namespace ICT.HACK.Controllers
             await achievementRequestRepository.AddAsync(request);
             await achievementRequestRepository.SaveAsync();
 
-            return Ok(request.Id.ToString());
+            return Ok(request.Id);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный claim:userid.");
-                return BadRequest(ModelState);
-            }
-
-            AchievementRequest request = await achievementRequestRepository.FindAsync(guid);
+            AchievementRequest request = await achievementRequestRepository.FindAsync(id);
             if(request == null)
             {
                 return NotFound();

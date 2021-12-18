@@ -31,22 +31,16 @@ namespace ICT.HACK.Controllers
         {
             var purchasesRepository = _serviceProvider.GetRequiredService<IRepository<Purchase>>();
 
-            if (Guid.TryParse(searchOptions.OwnerId, out var buyerGuid))
-            {
-                ModelState.AddModelError("Message", "Неверный формат id пользователя.");
-                return BadRequest(ModelState);
-            }
-
             var purchases = purchasesRepository.Query()
                                                .Include(p => p.Buyer)
                                                .Include(p => p.Product)
-                                               .Where(p => p.BuyerId == buyerGuid)
+                                               .Where(p => p.BuyerId == searchOptions.BuyerId)
                                                .OrderByDescending(p => p.Date)
                                                .Skip(searchOptions.Page * CountPurchasesOnPage)
                                                .Take(CountPurchasesOnPage)
                                                .Select(p => new PurchasesResponse.ShortPurchasesResponse()
                                                {
-                                                   Id = p.Id.ToString(),
+                                                   Id = p.Id,
                                                    Date = p.Date,
                                                    IsUsed = p.IsUsed,
                                                    BuyerName = p.Buyer.Name,
@@ -58,20 +52,14 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PurchaseResponse>> Get([FromRoute] string id)
+        public async Task<ActionResult<PurchaseResponse>> Get([FromRoute] Guid id)
         {
             var purchaseRepository = _serviceProvider.GetRequiredService<IRepository<Purchase>>();
-
-            if (Guid.TryParse(id, out var guid))
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
 
             Purchase purchase = await purchaseRepository.Query()
                                                         .Include(p => p.Buyer)
                                                         .Include(p => p.Product)
-                                                        .FirstOrDefaultAsync(p => p.Id == guid);
+                                                        .FirstOrDefaultAsync(p => p.Id == id);
 
             if ((string.Equals(User.FindFirst(Program.Configuration["UserClaims:Id"]).Value, purchase.BuyerId.ToString(), StringComparison.OrdinalIgnoreCase) == false)
                 && (User.IsInRole("Admin") == false))
@@ -84,12 +72,12 @@ namespace ICT.HACK.Controllers
             {
                 Date = purchase.Date,
                 IsUsed = purchase.IsUsed,
-                QRImageName = Path.Combine(_qrImagesPath, purchase.QRImageName),
+                QRImageName = purchase.QRImageName,
                 ProductName = purchase.Product.Name,
                 ProductPrice = purchase.Product.Price,
-                ProductId = purchase.ProductId.ToString(),
+                ProductId = purchase.ProductId,
                 BuyerName = purchase.Buyer.Name,
-                BuyerId = purchase.BuyerId.ToString()
+                BuyerId = purchase.BuyerId
             };
 
             return Ok(response);
@@ -103,19 +91,13 @@ namespace ICT.HACK.Controllers
             var productRepository = _serviceProvider.GetRequiredService<IRepository<Product>>();
             var qrGenerator = _serviceProvider.GetRequiredService<IQRGenerator>();
 
-            if (Guid.TryParse(purchaseData.ProductId, out var productGuid))
+            if (Guid.TryParse(User.FindFirst(Program.Configuration["UserClaims:Id"]).Value, out var buyerGuid) == false)
             {
-                ModelState.AddModelError("Message", "Неверный формат id продукта.");
+                ModelState.AddModelError("Message", "Неверный формат id пользователя.");
                 return BadRequest(ModelState);
             }
 
-            if (Guid.TryParse(User.FindFirst(Program.Configuration["UserClaims:Id"]).Value, out var buyerGuid))
-            {
-                ModelState.AddModelError("Message", "Неверный формат id продукта.");
-                return BadRequest(ModelState);
-            }
-
-            Product product = await productRepository.FindAsync(productGuid);
+            Product product = await productRepository.FindAsync(purchaseData.ProductId);
             if (product == null)
             {
                 ModelState.AddModelError("Message", "Продукт с таким id не найден.");
@@ -134,16 +116,13 @@ namespace ICT.HACK.Controllers
                 Date = DateTime.Today,
                 IsUsed = false,
                 BuyerId = buyerGuid,
-                ProductId = productGuid,
+                ProductId = product.Id,
+                QRImageName = $"{Guid.NewGuid()}.png"
             };
-            await purchaseRepository.AddAsync(purchase);
-            await purchaseRepository.SaveAsync();
 
-            string qrImageName = $"{purchase.Id.ToString()}.png";
-            await qrGenerator.SaveQRAsync(Path.Combine(_qrImagesPath, qrImageName), purchase.Id.ToString());
-            
-            purchase.QRImageName = qrImageName;
-            purchaseRepository.Edit(purchase);
+            await qrGenerator.SaveQRAsync(Path.Combine(_qrImagesPath, purchase.QRImageName), purchase.Id.ToString());
+
+            await purchaseRepository.AddAsync(purchase);
             await purchaseRepository.SaveAsync();
 
             return Ok(purchase.Id);
@@ -151,17 +130,11 @@ namespace ICT.HACK.Controllers
 
         [HttpPut("{id}")]
         [Authorize("Admin")]
-        public async Task<ActionResult> PutAsync(string id)
+        public async Task<ActionResult> PutAsync(Guid id)
         {
             var purchaseRepository = _serviceProvider.GetRequiredService<IRepository<Purchase>>();
 
-            if (Guid.TryParse(id, out var guid))
-            {
-                ModelState.AddModelError("Message", "Неверный формат id покупки.");
-                return BadRequest(ModelState);
-            }
-
-            Purchase purchase = await purchaseRepository.FindAsync(guid);
+            Purchase purchase = await purchaseRepository.FindAsync(id);
             if(purchase == null)
             {
                 return NotFound();

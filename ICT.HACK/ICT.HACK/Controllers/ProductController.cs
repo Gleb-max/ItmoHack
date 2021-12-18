@@ -25,7 +25,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ProductsResponse> Get([FromRoute] int page)
+        public ActionResult<ProductsResponse> Get([FromQuery] int page)
         {
             var productRepository = _serviceProvider.GetRequiredService<IRepository<Product>>();
 
@@ -34,8 +34,9 @@ namespace ICT.HACK.Controllers
                                                     .Take(CountProductsOnPage)
                                                     .Select(p => new ProductsResponse.ShortProductResponse()
                                                     {
-                                                        Id = p.Id.ToString(),
+                                                        Id = p.Id,
                                                         Name = p.Name,
+                                                        Description = p.Description,
                                                         Count = p.Count,
                                                         Price = p.Price,
                                                         ImageName = p.ImageName
@@ -48,17 +49,11 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductResponse>> GetAsync([FromRoute] string id)
+        public async Task<ActionResult<ProductResponse>> GetAsync([FromRoute] Guid id)
         {
             var productRepository = _serviceProvider.GetRequiredService<IRepository<Product>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            Product product = await productRepository.FindAsync(guid);
+            Product product = await productRepository.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -66,7 +61,7 @@ namespace ICT.HACK.Controllers
 
             ProductResponse response = new ProductResponse()
             {
-                Id = product.Id.ToString(),
+                Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
                 Count = product.Count,
@@ -107,22 +102,16 @@ namespace ICT.HACK.Controllers
             await productRepository.AddAsync(newProduct);
             await productRepository.SaveAsync();
 
-            return Ok(newProduct.Id.ToString());
+            return Ok(newProduct.Id);
         }
 
         [HttpPut("{id}")]
         [Authorize("Admin")]
-        public async Task<ActionResult> PutAsync([FromRoute] string id, [FromBody] EditProductRequest editData)
+        public async Task<ActionResult> PutAsync([FromRoute] Guid id, [FromBody] EditProductRequest editData)
         {
             var productRepository = _serviceProvider.GetRequiredService<IRepository<Product>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            Product product = await productRepository.FindAsync(guid);
+            Product product = await productRepository.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -159,17 +148,11 @@ namespace ICT.HACK.Controllers
 
         [HttpDelete("{id}")]
         [Authorize("Admin")]
-        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id)
         {
             var productRepository = _serviceProvider.GetRequiredService<IRepository<Product>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            Product product = await productRepository.FindAsync(guid);
+            Product product = await productRepository.FindAsync(id);
             if (product == null)
             {
                 return NotFound();

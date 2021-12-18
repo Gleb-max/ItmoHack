@@ -3,14 +3,13 @@ using ICT.HACK.Models.Enums;
 using ICT.HACK.Storage.Abstractions;
 using ICT.HACK.ViewModels.Request;
 using ICT.HACK.ViewModels.Response;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ICT.HACK.Controllers
 {
-    [Route("api/admin/requests")]
+    [Route("api/Admin/Requests")]
     [ApiController]
     [Authorize("Admin")]
     public class AdminAchievementRequestController : ControllerBase
@@ -46,12 +45,12 @@ namespace ICT.HACK.Controllers
 
             var requests = query.Select(a => new AchievementRequestsResponse.ShortAchievementRequestResponse()
             {
-                Id = a.Id.ToString(),
+                Id = a.Id,
                 Name = a.Name,
                 Points = a.Points,
                 Accepted = a.Accepted,
                 OwnerName = a.Owner.Name,
-                OwnerId = a.OwnerId.ToString()
+                OwnerId = a.OwnerId
             });
 
             var response = new AchievementRequestsResponse() { AchievementRequests = requests };
@@ -60,23 +59,18 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync([FromRoute] string id, [FromBody] EditAchievementRequestRequest editData)
+        public async Task<ActionResult> PutAsync([FromRoute] Guid id, [FromBody] EditAchievementRequestRequest editData)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
             var achievementRepository = _serviceProvider.GetRequiredService<IRepository<Achievement>>();
             var statisticsRepository = _serviceProvider.GetRequiredService<IRepository<Statistics>>();
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
 
             AchievementRequest request = await achievementRequestRepository.Query()
                                                                            .Include(a => a.Owner)
                                                                            .ThenInclude(u => u.Statistics)
-                                                                           .FirstOrDefaultAsync(a => a.Id == guid);
+                                                                           .FirstOrDefaultAsync(a => a.Id == id);
             if (request == null)
             {
                 return NotFound();
@@ -123,17 +117,11 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            AchievementRequest request = await achievementRequestRepository.FindAsync(guid);
+            AchievementRequest request = await achievementRequestRepository.FindAsync(id);
             if (request == null)
             {
                 return NotFound();

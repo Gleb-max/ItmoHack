@@ -4,10 +4,10 @@ namespace ICT.HACK.ViewModels.Request
 {
     public class LoginRequest
     {
-        [Required]
+        [Required(ErrorMessage = "Вы не ввели ISU.")]
         public string ISUId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Вы не ввели Пароль.")]
         public string Password { get; set; }
     }
 }

@@ -2,6 +2,6 @@
 {
     public class PurchaseRequest
     {
-        public string ProductId { get; set; }
+        public Guid ProductId { get; set; }
     }
 }

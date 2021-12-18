@@ -29,13 +29,7 @@ namespace ICT.HACK.Controllers
         {
             var achievementRepository = _serviceProvider.GetRequiredService<IRepository<Achievement>>();
 
-            if (Guid.TryParse(searchOptions.OwnerId, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            IQueryable<Achievement> query = achievementRepository.Query().Where(a => a.OwnerId == guid);
+            IQueryable<Achievement> query = achievementRepository.Query().Where(a => a.OwnerId == searchOptions.OwnerId);
             if (searchOptions.Sphere.HasValue)
             {
                 query = query.Where(a => a.Sphere == searchOptions.Sphere);
@@ -49,7 +43,7 @@ namespace ICT.HACK.Controllers
             {
                 Achievements = query.Select(a => new AchievementsResponse.ShortAchievementResponse()
                 {
-                    Id = a.Id.ToString(),
+                    Id = a.Id,
                     Name = a.Name,
                     Points = a.Points,
                     Sphere = a.Sphere,
@@ -60,21 +54,15 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AchievementResponse>> GetAsync([FromRoute] string id)
+        public async Task<ActionResult<AchievementResponse>> GetAsync([FromRoute] Guid id)
         {
             var achievementRepository = _serviceProvider.GetRequiredService<IRepository<Achievement>>();
-
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
 
             AchievementResponse response = await achievementRepository.Query()
                                                                       .Include(a => a.Owner)
                                                                       .Select(a => new AchievementResponse()
                                                                       {
-                                                                          Id = a.Id.ToString(),
+                                                                          Id = a.Id,
                                                                           Name = a.Name,
                                                                           Description = a.Description,
                                                                           Points = a.Points,
@@ -82,10 +70,9 @@ namespace ICT.HACK.Controllers
                                                                           ConfirmedDate = a.ConfirmedDate,
                                                                           OwnerName = a.Owner.Name,
                                                                           OwnerISUId = a.Owner.ISUId,
-                                                                          OwnerId = a.OwnerId.ToString()
+                                                                          OwnerId = a.OwnerId
                                                                       })
-                                                                      .FirstOrDefaultAsync(a => string.Equals(id, a.Id, StringComparison.OrdinalIgnoreCase));
-
+                                                                      .FirstOrDefaultAsync(a => id == a.Id);
             if(response == null)
             {
                 return NotFound();
@@ -96,17 +83,11 @@ namespace ICT.HACK.Controllers
 
         [HttpDelete("{id}")]
         [Authorize("Admin")]
-        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id)
         {
             var achievementRepository = _serviceProvider.GetRequiredService<IRepository<Achievement>>();
 
-            if (Guid.TryParse(id, out var guid) == false)
-            {
-                ModelState.AddModelError("Message", "Неверный формат id.");
-                return BadRequest(ModelState);
-            }
-
-            Achievement achievement = await achievementRepository.FindAsync(guid);
+            Achievement achievement = await achievementRepository.FindAsync(id);
             if (achievement == null)
             {
                 return NotFound();
