@@ -1,4 +1,6 @@
-﻿namespace ICT.HACK.Models
+﻿using ICT.HACK.Models.Enums;
+
+namespace ICT.HACK.Models
 {
     public class Achievement
     {
@@ -8,7 +10,7 @@
 
         public string Description { get; set; }
 
-        public string Sphere { get; set; }
+        public AchievementSpheres Sphere { get; set; }
 
         public int Points { get; set; }
 

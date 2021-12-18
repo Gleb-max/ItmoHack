@@ -1,4 +1,5 @@
 ﻿using ICT.HACK.Models;
+using ICT.HACK.Models.Enums;
 using ICT.HACK.Storage.Abstractions;
 using ICT.HACK.ViewModels.Request;
 using ICT.HACK.ViewModels.Response;
@@ -32,10 +33,10 @@ namespace ICT.HACK.Controllers
 
             query = searchOptions.SearchType switch
             {
-                AchievementRequestsRequest.AchievementRequestsSearchType.All => query,
-                AchievementRequestsRequest.AchievementRequestsSearchType.Moderation => query.Where(a => a.Accepted.HasValue == false),
-                AchievementRequestsRequest.AchievementRequestsSearchType.Accepted => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == true),
-                AchievementRequestsRequest.AchievementRequestsSearchType.Denied => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == false),
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.All => query,
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.Moderation => query.Where(a => a.Accepted.HasValue == false),
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.Accepted => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == true),
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.Denied => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == false),
                 _ => query
             };
 
@@ -58,22 +59,85 @@ namespace ICT.HACK.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> PutAsync(string id, [FromBody] EditAchievementRequestRequest editData)
         {
+            var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
+            var achievementRepository = _serviceProvider.GetRequiredService<IRepository<Achievement>>();
+            var statisticsRepository = _serviceProvider.GetRequiredService<IRepository<Statistics>>();
 
+            if (Guid.TryParse(id, out var guid) == false)
+            {
+                ModelState.AddModelError("Message", "Неверный формат id.");
+                return BadRequest(ModelState);
+            }
+
+            AchievementRequest request = await achievementRequestRepository.Query()
+                                                                           .Include(a => a.Owner)
+                                                                           .ThenInclude(u => u.Statistics)
+                                                                           .FirstOrDefaultAsync(a => a.Id == guid);
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            request.Accepted = editData.Accepted;
+            if (editData.Accepted)
+            {
+                request.Points = editData.Points.HasValue ? editData.Points.Value : request.Points;
+
+                Achievement achievement = new Achievement()
+                {
+                    Name = request.Name,
+                    Description = request.Description,
+                    Points = request.Points,
+                    Sphere = editData.Sphere,
+                    OwnerId = request.OwnerId,
+                };
+
+                switch (editData.Sphere)
+                {
+                    case AchievementSpheres.Physical: request.Owner.Statistics.Physical += request.Points; break;
+                    case AchievementSpheres.Technical: request.Owner.Statistics.Technical += request.Points; break;
+                    case AchievementSpheres.Humanities: request.Owner.Statistics.Humanities += request.Points; break;
+                    case AchievementSpheres.Natural: request.Owner.Statistics.Natural += request.Points; break;
+                    case AchievementSpheres.SoftSkills: request.Owner.Statistics.SoftSkills += request.Points; break;
+                }
+
+                await achievementRepository.AddAsync(achievement);
+                statisticsRepository.Edit(request.Owner.Statistics);
+
+                await achievementRepository.SaveAsync();
+                await statisticsRepository.SaveAsync();
+            }
+
+            achievementRequestRepository.Edit(request);
+            await achievementRequestRepository.SaveAsync();
+
+            return Ok();
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> DeleteAsync(string id)
         {
+            var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
+            if (Guid.TryParse(id, out var guid) == false)
+            {
+                ModelState.AddModelError("Message", "Неверный формат id.");
+                return BadRequest(ModelState);
+            }
+
+            AchievementRequest request = await achievementRequestRepository.FindAsync(guid);
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            achievementRequestRepository.Delete(request);
+            await achievementRequestRepository.SaveAsync();
+
+            return Ok();
         }
     }
 }

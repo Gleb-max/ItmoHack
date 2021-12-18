@@ -32,7 +32,11 @@ namespace ICT.HACK.Controllers
             IQueryable<User> query = userRepository.Query().Include(u => u.Faculty);
             if (searchOptions.InFaculty)
                 query = query.Where(u => u.FacultyId.ToString() == searchOptions.FacultyId);
-            query = query.OrderByDescending(u => u.Statistics.Points);
+            query = query.OrderByDescending(u => (u.Statistics.Physical +
+                                                  u.Statistics.Technical +
+                                                  u.Statistics.Humanities +
+                                                  u.Statistics.Natural +
+                                                  u.Statistics.SoftSkills));
 
             IEnumerable<UsersResponse.ShortUserResponse> users = query.Select(u => new UsersResponse.ShortUserResponse()
             {
@@ -40,7 +44,11 @@ namespace ICT.HACK.Controllers
                 ISUId = u.ISUId,
                 Name = u.Name,
                 Faculty = u.Faculty.Name,
-                Points = u.Statistics.Points
+                Points = (u.Statistics.Physical +
+                          u.Statistics.Technical +
+                          u.Statistics.Humanities +
+                          u.Statistics.Natural +
+                          u.Statistics.SoftSkills)
             });
 
             UsersResponse response = new UsersResponse() { Users = users.AsEnumerable() };

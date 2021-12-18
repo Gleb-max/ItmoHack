@@ -4,14 +4,14 @@
     {
         public int Page { get; set; }
 
-        public AchievementRequestsSearchType SearchType { get; set; }
+        public AchievementRequestsSearchTypes SearchType { get; set; }
 
-        public enum AchievementRequestsSearchType : byte
+        public enum AchievementRequestsSearchTypes
         {
-            All = 0,
-            Accepted = 1,
-            Denied = 2,
-            Moderation = 3,
+            All,
+            Accepted,
+            Denied,
+            Moderation,
         }
     }
 }

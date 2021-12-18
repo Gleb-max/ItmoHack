@@ -1,4 +1,6 @@
-﻿namespace ICT.HACK.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ICT.HACK.Models
 {
     public class User
     {
@@ -17,7 +19,7 @@
         public IEnumerable<AchievementRequest> AchievementsRequests { get; set; }
 
         public Faculty Faculty { get; set; }
-        public Guid FacultyId { get; set; }
+        public Guid? FacultyId { get; set; }
 
         public Role Role { get; set; }
         public Guid RoleId { get; set; }

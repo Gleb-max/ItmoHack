@@ -13,6 +13,11 @@ namespace ICT.HACK.Storage
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Faculty>(e =>
+            {
+                e.HasKey(f => f.Id);
+                e.Property(f => f.Id).HasDefaultValueSql("NEWID()");
+            });
 
             modelBuilder.Entity<User>(e =>
             {
@@ -20,7 +25,7 @@ namespace ICT.HACK.Storage
                 e.HasAlternateKey(u => u.ISUId);
                 e.Property(u => u.Id).HasDefaultValueSql("NEWID()");
                 e.HasOne(u => u.Role).WithMany().HasForeignKey(u => u.RoleId);
-                e.HasOne(u => u.Faculty).WithMany().HasForeignKey(u => u.FacultyId);
+                e.HasOne(u => u.Faculty).WithMany(f => f.Students).HasForeignKey(u => u.FacultyId);
                 e.HasOne(u => u.Statistics).WithOne().HasForeignKey<Statistics>(s => s.OwnerId);
             });
 
@@ -40,21 +45,17 @@ namespace ICT.HACK.Storage
             {
                 e.HasKey(a => a.Id);
                 e.Property(a => a.Id).HasDefaultValueSql("NEWID()");
-                e.HasOne(a => a.Owner).WithMany().HasForeignKey(a => a.OwnerId);
+                e.HasOne(a => a.Owner).WithMany(u => u.Achievements).HasForeignKey(a => a.OwnerId);
             });
 
             modelBuilder.Entity<AchievementRequest>(e =>
             {
                 e.HasKey(a => a.Id);
                 e.Property(a => a.Id).HasDefaultValueSql("NEWID()");
-                e.HasOne(a => a.Owner).WithMany().HasForeignKey(a => a.OwnerId);
+                e.HasOne(a => a.Owner).WithMany(u => u.AchievementsRequests).HasForeignKey(a => a.OwnerId);
             });
 
-            modelBuilder.Entity<Faculty>(e =>
-            {
-                e.HasKey(f => f.Id);
-                e.Property(f => f.Id).HasDefaultValueSql("NEWID()");
-            });
+            
 
             base.OnModelCreating(modelBuilder);
         }

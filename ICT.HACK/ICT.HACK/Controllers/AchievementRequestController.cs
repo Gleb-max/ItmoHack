@@ -30,9 +30,10 @@ namespace ICT.HACK.Controllers
 
             IQueryable<AchievementRequest> query = achievementRequestRepository.Query().Include(a => a.Owner);
 
-            if (Guid.TryParse(User.FindFirst(Program.Configuration["UserClaims:Id"]).Value, out var guid) == false)
+            string userId = User.FindFirst(Program.Configuration["UserClaims:Id"]).Value;
+            if (Guid.TryParse(userId, out var guid) == false)
             {
-                ModelState.AddModelError("Message", "Неверный claim:userid");
+                ModelState.AddModelError("Message", "Неверный claim:userid.");
                 return BadRequest(ModelState);
             }
 
@@ -40,10 +41,10 @@ namespace ICT.HACK.Controllers
 
             query = searchOptions.SearchType switch
             {
-                AchievementRequestsRequest.AchievementRequestsSearchType.All => query,
-                AchievementRequestsRequest.AchievementRequestsSearchType.Moderation => query.Where(a => a.Accepted.HasValue == false),
-                AchievementRequestsRequest.AchievementRequestsSearchType.Accepted => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == true),
-                AchievementRequestsRequest.AchievementRequestsSearchType.Denied => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == false),
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.All => query,
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.Moderation => query.Where(a => a.Accepted.HasValue == false),
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.Accepted => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == true),
+                AchievementRequestsRequest.AchievementRequestsSearchTypes.Denied => query.Where(a => a.Accepted.HasValue && a.Accepted.Value == false),
                 _ => query
             };
                     
@@ -105,7 +106,8 @@ namespace ICT.HACK.Controllers
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
-            if(Guid.TryParse(User.FindFirst(Program.Configuration["UserClaims:Id"]).Value, out var guid))
+            string userId = User.FindFirst(Program.Configuration["UserClaims:Id"]).Value;
+            if (Guid.TryParse(userId, out var guid) == false)
             {
                 ModelState.AddModelError("Message", "Неверный claim:userid.");
                 return BadRequest(ModelState);
@@ -132,9 +134,10 @@ namespace ICT.HACK.Controllers
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
-            if (Guid.TryParse(id, out var guid))
+            string userId = User.FindFirst(Program.Configuration["UserClaims:Id"]).Value;
+            if (Guid.TryParse(userId, out var guid) == false)
             {
-                ModelState.AddModelError("Message", "Неверный формат id.");
+                ModelState.AddModelError("Message", "Неверный claim:userid.");
                 return BadRequest(ModelState);
             }
 
