@@ -11,6 +11,8 @@ import {enableScreens} from 'react-native-screens';
 import {WelcomeNavigation} from 'screens/WelcomeScreen';
 import {AuthNavigation} from 'screens/auth';
 import {MainNavigation} from 'screens/main';
+import { store } from 'redux/store';
+import { loadFaculties } from 'redux/actions';
 
 //types
 type AppNavigationProps = {
@@ -26,6 +28,10 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
   isLoggedIn = false,
   isWelcomeComplete = false,
 }) => {
+  //effects
+  React.useEffect(() => {
+    store.dispatch(loadFaculties({}));
+  }, []);
   React.useEffect(() => {
     LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
   }, []);
@@ -41,6 +47,7 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
 
 const mapStateToProps = (state: any) => {
   console.log(state);
+
   return {
     isLoggedIn: state.authReducer.authData.isLoggedIn,
     isWelcomeComplete: state.welcomeReducer.isWelcomeComplete,

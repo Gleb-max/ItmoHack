@@ -13,6 +13,16 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 7,
   },
+  reloadButton: {
+    marginHorizontal: 30,
+    marginVertical: 'auto',
+  },
+  errorContainer: {
+    backgroundColor: '#FDFDFD',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+  },
 });
 
 export default styles;

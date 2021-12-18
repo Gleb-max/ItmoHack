@@ -15,10 +15,11 @@ export {
   CustomDropDown,
   StandardGroupHeader,
   SimpleTextInput,
-  FastCard,
   StepItem,
   ActionButton,
   SearchField,
   BackButton,
   ErrorAlert,
+  ShopItemCard,
+  RatingItemCard,
 } from './molecules';

@@ -8,6 +8,7 @@ type MontserratTextProps = {
   size: 'm1' | 'm2' | 'm3' | 'm4' | 'm5' | 'm6';
   styleText?: StyleProp<TextStyle>;
   style?: StyleProp<TextStyle>;
+  lines?: number;
   children: React.ReactNode;
 };
 
@@ -16,6 +17,7 @@ export const MontserratText: React.FC<MontserratTextProps> = ({
   size,
   styleText,
   style,
+  lines = undefined,
   children,
 }) => {
   let fontSize;
@@ -44,6 +46,7 @@ export const MontserratText: React.FC<MontserratTextProps> = ({
 
   return (
     <Text
+      numberOfLines={lines}
       style={[
         {fontFamily: `Montserrat-${type}`, fontSize: fontSize},
         style,

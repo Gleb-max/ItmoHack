@@ -1,31 +1,60 @@
 import React from 'react';
 import {View, StatusBar, ScrollView, Text} from 'react-native';
 
-//components
-import {MedicineMap, VeterinaryClinicCard} from 'library/components';
-
 //styles
 import styles from './Field.styles';
 
-//types
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {VeterinarClinic} from 'library/types';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import MapView from 'react-native-maps';
+import { WebView } from 'react-native-webview';
+import { LoaderOverlay, StandardButton } from 'library/components';
 
 type FieldViewProps = {
   
 };
 
 export const FieldView: React.FC<FieldViewProps> = () => {
+  //state
+  const [isError, setIsError] = React.useState(false);
+
+  //refs
+  var webViewRef = React.createRef<any>();
+
+  const reload = () => {
+    setIsError(false);
+    webViewRef.current.reload();
+  }
+
   return (
-    <View style={styles.container}>
+    <>
       <StatusBar
         barStyle={'dark-content'}
         backgroundColor={'transparent'}
         translucent
       />
-      <Text>Field</Text>
-    </View>
+      <WebView
+          ref={webViewRef}
+          source={{ uri: 'https://76f6-77-234-209-96.ngrok.io/' }} 
+          setBuiltInZoomControls={true} 
+          scrollEnabled={true}
+          setDisplayZoomControls={true}
+          domStorageEnabled={true} 
+          javaScriptEnabled={true}
+          startInLoadingState={true}
+          renderError={(errorDomain: string | undefined, errorCode: number, errorDesc: string) => {
+            if (errorDesc === "net::ERR_INTERNET_DISCONNECTED") {
+              return (
+                <View style={styles.errorContainer}>
+                  <StandardButton
+                    text={'Перезагрузить'}
+                    onPress={reload}
+                    style={styles.reloadButton}
+                  />
+                </View>
+              );
+            }
+            return <></>;
+          }}
+          renderLoading={() => <LoaderOverlay color={'#1A1D5B'} size={'large'} />}
+        />
+    </>
   );
 };

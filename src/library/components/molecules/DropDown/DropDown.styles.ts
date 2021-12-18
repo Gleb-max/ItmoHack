@@ -4,14 +4,15 @@ import {Helpers} from 'library/theme';
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'flex-start',
-    zIndex: 100,
+    // zIndex: 100,
     // elevation: 5,
   },
   dropdown: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF00',
     borderWidth: 0,
+    borderBottomWidth: 2,
     alignSelf: 'baseline',
-    ...Helpers.boxShadow('rgb(223, 227, 229)', {x: 0, y: 4}, 50, 0.3, 3),
+    // ...Helpers.boxShadow('rgb(223, 227, 229)', {x: 0, y: 4}, 50, 0.3, 3),
   },
   list: {
     borderWidth: 0,
@@ -27,17 +28,19 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontSize: 15,
     lineHeight: 18,
-    color: '#000000',
   },
   placeholder: {
-    color: '#000',
+    color: '#fff',
+    fontSize: 18,
   },
   label: {
-    marginLeft: 2,
-    color: '#000',
+    marginLeft: -2,
+    color: '#000000ee',
+    fontSize: 18,
   },
   activeLabel: {
-    color: '#5C3661',
+    color: '#1A1D5B',
+    fontSize: 18,
   },
 });
 

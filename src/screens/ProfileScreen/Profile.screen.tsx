@@ -31,6 +31,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({}) => {
 		navigation.navigate('achievements');
 	}, [navigation]);
 
+  const _onNotification = React.useCallback(() => {
+		navigation.navigate('notifications');
+	}, [navigation]);
+
   const _onLogout = () => store.dispatch(logout());
 
   const [_profilePhoto, _setProfilePhoto] = React.useState<string>('https://dl.dropboxusercontent.com/s/9tn5z54d72m1egr/Ellipse%2016.png');
@@ -48,6 +52,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({}) => {
       onLogout={_onLogout}
       onAchievements={_onAchievements}
       setProfilePhoto={setProfilePhoto}
+      onNotification={_onNotification}
     />
   );
 };

@@ -25,6 +25,7 @@ import {
   AppFeatureText,
   LoaderOverlay,
   ErrorAlert,
+  CustomDropDown,
 } from 'library/components';
 
 //styles
@@ -40,6 +41,7 @@ type AuthViewProps = {
   restore: (data: {}) => void;
   isLoading: boolean;
   isError: boolean;
+  faculties: {label: string, value: string} [];
   errorMessage: string;
   hideError: () => void;
   showError: (data: {}) => void;
@@ -92,6 +94,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
   isLoading,
   isError,
   errorMessage,
+  faculties,
   hideError,
   showError,
 }) => {
@@ -144,7 +147,6 @@ export const AuthView: React.FC<AuthViewProps> = ({
     //setActiveIndex(index);
   };
 
-  //effects
   React.useEffect(() => {
     const backAction = () => {
       if (isLoading) return;
@@ -304,7 +306,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
               renderType={'clear'}
               placeholder={'Ваше имя'}
             />
-            <CustomTextInput
+            {/* <CustomTextInput
               value={authFieldsContent.register.faculty}
               autoCapitalize={'sentences'}
               onChange={(text: string) => {
@@ -313,6 +315,15 @@ export const AuthView: React.FC<AuthViewProps> = ({
               style={styles.authField}
               renderType={'clear'}
               placeholder={'Факультет'}
+            /> */}
+            <CustomDropDown
+              data = {faculties}
+              placeHolder={'Факультет'}
+              onChange={(el) => {
+                authFieldsContent.register.faculty = el.value;
+              }}
+              containerStyle={styles.dropdownContainer}
+              style={styles.dropdown}
             />
             <CustomTextInput
               value={authFieldsContent.register.password}

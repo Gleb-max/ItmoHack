@@ -5,10 +5,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FDFDFD',
   },
-  chart: {
-		flex: 1,
-    minHeight: 100,
-	},
   scrollContent: {
     paddingTop: 50,
     paddingBottom: 60,
@@ -41,6 +37,9 @@ const styles = StyleSheet.create({
   functionButton: {
     marginBottom: 22,
   },
+  notificationButton: {
+    marginLeft: 'auto',
+  }
 });
 
 export default styles;

@@ -116,6 +116,14 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 15,
   },
+  dropdown: {
+		borderRadius: 8,
+		paddingHorizontal: 10,
+	},
+  dropdownContainer: {
+		height: 50,
+    marginTop: 10,
+	},
 });
 
 export default styles;

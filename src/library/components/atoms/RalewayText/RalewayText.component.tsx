@@ -6,21 +6,21 @@ import {Text, TextStyle, StyleProp} from 'react-native';
 type RalewayTextProps = {
   type: 'Light' | 'Medium' | 'Regular' | 'Semibold';
   size:
-    | 'g1'
-    | 'g2'
-    | 'g3'
-    | 'g4'
-    | 'g5'
-    | 'g6'
-    | 'g7'
-    | 'g8'
-    | 'g9'
-    | 'g10'
-    | 'g11'
-    | 'g12'
-    | 'g13'
-    | 'g14'
-    | 'g15';
+    | 'r1'
+    | 'r2'
+    | 'r3'
+    | 'r4'
+    | 'r5'
+    | 'r6'
+    | 'r7'
+    | 'r8'
+    | 'r9'
+    | 'r10'
+    | 'r11'
+    | 'r12'
+    | 'r13'
+    | 'r14'
+    | 'r15';
   styleText?: StyleProp<TextStyle>;
   style?: StyleProp<TextStyle>;
   children: React.ReactNode;
@@ -35,49 +35,49 @@ export const RalewayText: React.FC<RalewayTextProps> = ({
 }) => {
   let fontSize;
   switch (size) {
-    case 'g1':
+    case 'r1':
       fontSize = 27;
       break;
-    case 'g2':
+    case 'r2':
       fontSize = 34;
       break;
-    case 'g3':
+    case 'r3':
       fontSize = 17;
       break;
-    case 'g4':
+    case 'r4':
       fontSize = 22;
       break;
-    case 'g5':
+    case 'r5':
       fontSize = 21;
       break;
-    case 'g6':
+    case 'r6':
       fontSize = 13;
       break;
-    case 'g7':
+    case 'r7':
       fontSize = 32;
       break;
-    case 'g8':
+    case 'r8':
       fontSize = 29;
       break;
-    case 'g9':
+    case 'r9':
       fontSize = 26;
       break;
-    case 'g10':
+    case 'r10':
       fontSize = 60;
       break;
-    case 'g11':
+    case 'r11':
       fontSize = 14;
       break;
-    case 'g12':
+    case 'r12':
       fontSize = 11;
       break;
-    case 'g13':
+    case 'r13':
       fontSize = 12;
       break;
-    case 'g14':
+    case 'r14':
       fontSize = 24;
       break;
-    case 'g15':
+    case 'r15':
       fontSize = 18;
       break;
     default:

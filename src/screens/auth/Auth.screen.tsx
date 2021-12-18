@@ -16,6 +16,7 @@ type AuthScreenProps = {
   isLoading?: boolean;
   isError?: boolean;
   errorMessage: string;
+  faculties: {label: string, value: string} [];
 };
 
 //images
@@ -48,8 +49,8 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
   isLoading = false,
   isError = false,
   errorMessage = '',
+  faculties = [],
 }) => {
-  console.log(isLoading);
   //state
   const [_activeIndex, _setActiveIndex] = React.useState(0);
 
@@ -69,6 +70,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
       isLoading={isLoading}
       isError={isError}
       errorMessage={errorMessage}
+      faculties={faculties}
       hideError={() => store.dispatch(errorCancel())}
       showError={(data: {}) => store.dispatch(error(data))}
     />
@@ -80,6 +82,7 @@ const mapStateToProps = (state: any) => {
     isLoading: state.loadingReducer.isAuthLoading || false,
     isError: state.errorReducer.isError || false,
     errorMessage: state.errorReducer.errorMessage || '',
+    faculties: state.facultiesReducer.faculties || [],
   };
 };
 

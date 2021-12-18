@@ -6,6 +6,7 @@ import welcomeReducer from './welcome.reducer';
 import searchReducer from './search.reducer';
 import loadingReducer from './loading.reducer';
 import errorReducer from './error.reducer';
+import facultiesReducer from './faculties.reducer';
 
 const reducers = {
   authReducer,
@@ -14,6 +15,7 @@ const reducers = {
   searchReducer,
   loadingReducer,
   errorReducer,
+  facultiesReducer,
 };
 
 const appReducer = combineReducers(reducers);

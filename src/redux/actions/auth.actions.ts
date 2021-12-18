@@ -1,3 +1,4 @@
+import { store } from 'redux/store';
 import API from '../../api/server';
 
 export const register = (payload: any) => {
@@ -5,43 +6,40 @@ export const register = (payload: any) => {
     dispatch({
       type: 'LOADING',
     });
-    const formData = new FormData();
-    formData.append('isuId', payload.isuId);
-    formData.append('name', payload.name);
-    formData.append('facultyId', payload.faculty);
-    formData.append('password', payload.password);
+    // const formData = new FormData();
+    // formData.append('isuId', payload.isuId);
+    // formData.append('name', payload.name);
+    // formData.append('facultyId', payload.faculty);
+    // formData.append('password', payload.password);
 
-    API.post('api/User', formData, {})
+    const body = {
+      isuId: payload.isuId,
+      name: payload.name,
+      facultyId: payload.faculty,
+      password: payload.password,
+    }
+
+    API.post('api/User', body, {headers: {'Content-Type': 'application/json'}})
       .then((response) => {
-        console.log(response.data);
-
-        //todo: auto login
-        dispatch({
-          type: 'LOADING_CANCEL',
-        });
-        dispatch({
-          type: 'AUTH_USER_SUCCESS',
-          token: response.data.token,
-        });
+        store.dispatch(login({
+          isuId: payload.isuId,
+          password: payload.password,
+        }));
       })
       .catch((error) => {
-        let message = 'Проверьте подключение к интернету';
-
         console.log(error.response.data);
-        switch (error.response.data.authData) {
-          case 'Required fields not filling':
-            message = 'Не все поля заполнены';
-            break;
-          case 'Email exist':
-            message = 'К этому почтовому адресу уже привязан аккаунт';
-            break;
-          case 'Nick exist':
-            message = 'Этот ник уже занят';
-            break;
-          default:
-            message = 'Неизвестная ошибка';
-            break;
+        let message;
+
+        if (error.response == undefined) {
+          message = 'Проверьте подключение к интернету';
         }
+        else if (error.response && error.response.data.Message != undefined) {
+          message = error.response.data.Message[0];
+        }
+        else if (error.response.status == 400) {
+          message = 'Не все поля заполнены!';
+        }
+        
         dispatch({
           type: 'LOADING_CANCEL',
         });
@@ -65,13 +63,13 @@ export const login = (payload: any) => {
 
     API.get('api/auth/token/', {params: params})
       .then((response) => {
-        //console.log(response.data.token);
+        console.log(response.data);
         dispatch({
           type: 'LOADING_CANCEL',
         });
         dispatch({
           type: 'AUTH_USER_SUCCESS',
-          token: response.data.token,
+          token: response.data,
         });
       })
       .catch((error) => {

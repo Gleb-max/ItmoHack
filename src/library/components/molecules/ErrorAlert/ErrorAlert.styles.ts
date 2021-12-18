@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     marginTop: 10,
+    textAlign: 'center',
   },
   icon: {},
 });

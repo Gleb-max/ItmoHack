@@ -14,6 +14,7 @@ type LoaderOverlayProps = {
   color?: string;
   style?: StyleProp<ViewStyle>;
   loaderStyle?: StyleProp<ViewStyle>;
+  isTransparent?: boolean;
 };
 
 export const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
@@ -21,9 +22,10 @@ export const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
   color = '#ff7366',
   style,
   loaderStyle,
+  isTransparent = false,
 }) => {
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style, !isTransparent && {backgroundColor: 'rgba(0, 0, 0, 0.4)'}]}>
       <Loader color={color} size={size} style={loaderStyle} />
     </View>
   );

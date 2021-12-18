@@ -15,9 +15,13 @@ import {RatingsNavigation} from 'screens/RatingsScreen';
 import {FieldNavigation} from 'screens/FieldScreen';
 import {ShopNavigation} from 'screens/ShopScreen';
 import {ProfileNavigation} from 'screens/ProfileScreen';
+import {EventsNavigation} from 'screens/EventsScreen';
 
 //features navigators
 import {AchievementsNavigation} from 'screens/AchievementsScreen';
+import {ProductNavigation} from 'screens/ProductScreen';
+import {NotificationsNavigation} from 'screens/NotificationsScreen';
+import {RatingItemNavigation} from 'screens/RatingItemScreen';
 
 //components
 import {TabBarContainer} from 'library/components/molecules';
@@ -37,6 +41,11 @@ const mapRouteNameToData: NavigationTypes.TabBarRouteMap = {
     route: 'main/ratings',
     label: 'Ratings',
     iconName: 'ic_tabbar_rating',
+  },
+  'main/events': {
+    route: 'main/events',
+    label: 'Events',
+    iconName: 'ic_tabbar_events',
   },
   'main/field': {
     route: 'main/field',
@@ -61,6 +70,10 @@ const routes: NavigationTypes.TabBarRouteConfig[] = [
     screen: RatingsNavigation,
   },
   {
+    ...mapRouteNameToData['main/events'],
+    screen: EventsNavigation,
+  },
+  {
     ...mapRouteNameToData['main/field'],
     screen: FieldNavigation,
   },
@@ -80,6 +93,7 @@ const MainTabs = createBottomTabNavigator();
 export const MainNavigation: React.FC<MainNavigationProps> = ({
   notifications = {
     'main/ratings': 0,
+    'main/events': 0,
     'main/field': 0,
     'main/shop': 0,
     'main/profile': 0,
@@ -126,6 +140,9 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
       screenOptions={{headerShown: false, stackAnimation: 'default'}}>
       <MainNativeStack.Screen name={'main'} component={_renderBottomTabBar} />
       <MainNativeStack.Screen name={'achievements'} component={AchievementsNavigation} />
+      <MainNativeStack.Screen name={'product'} component={ProductNavigation} />
+      <MainNativeStack.Screen name={'notifications'} component={NotificationsNavigation} />
+      <MainNativeStack.Screen name={'rating_item'} component={RatingItemNavigation} />
     </MainNativeStack.Navigator>
   );
 };

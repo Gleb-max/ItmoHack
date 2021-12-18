@@ -14,7 +14,8 @@ export type CommonIconName =
   | 'ic_search'
   | 'ic_arrow_left'
   | 'ic_error'
-  | 'ic_flag';
+  | 'ic_flag'
+  | 'ic_notification';
 
 export type TabBarIconName =
   | 'ic_tabbar_cursor'
@@ -25,6 +26,8 @@ export type TabBarIconName =
   | 'ic_tabbar_shop'
   | 'ic_tabbar_shop_active'
   | 'ic_tabbar_profile'
-  | 'ic_tabbar_profile_active';
+  | 'ic_tabbar_profile_active'
+  | 'ic_tabbar_events'
+  | 'ic_tabbar_events_active';
 
 export type SMIconsName = CommonIconName | TabBarIconName;

@@ -13,6 +13,10 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 7,
   },
+  chart: {
+		flex: 1,
+    minHeight: 100,
+	},
 });
 
 export default styles;

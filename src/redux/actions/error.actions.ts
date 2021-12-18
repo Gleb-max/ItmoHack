@@ -1,6 +1,5 @@
 export const error = (payload: any) => {
   return async (dispatch: any) => {
-    console.log(payload)
     dispatch({
       type: 'ERROR',
       errorMessage: payload.message,

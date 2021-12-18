@@ -30,7 +30,7 @@ export const StandardButton: React.FC<StandardButtonProps> = ({
       style={[styles.container, reverse && styles.containerReverse, style]}>
       <RalewayText
         type={'Semibold'}
-        size={'m1'}
+        size={'r3'}
         style={[styles.text, reverse && styles.textReverse, textStyle]}>
         {text}
       </RalewayText>

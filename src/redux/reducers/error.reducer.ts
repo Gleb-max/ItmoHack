@@ -1,5 +1,4 @@
 const error = (state = {}, action: any) => {
-  console.log(action);
   switch (action.type) {
     case 'ERROR':
       return {
