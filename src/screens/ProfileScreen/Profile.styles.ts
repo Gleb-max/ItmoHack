@@ -5,6 +5,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FDFDFD',
   },
+  chart: {
+		flex: 1,
+    minHeight: 100,
+	},
   scrollContent: {
     paddingTop: 50,
     paddingBottom: 60,

@@ -27,7 +27,7 @@ export const TabBarItem: React.FC<TabBarItemProps> = ({
   const _iconName = isFocused
     ? iconName
     : ((iconName + '_active') as Icons.TabBarIconName);
-  const contentColor = isFocused ? '#5C3661' : '#AFAFAF';
+  const contentColor = isFocused ? '#4647ed' : '#AFAFAF';
 
   return (
     <Pressable

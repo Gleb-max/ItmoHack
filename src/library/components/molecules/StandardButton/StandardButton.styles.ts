@@ -12,10 +12,10 @@ const styles = StyleSheet.create({
     ...Helpers.boxShadow('rgba(0, 0, 0, 0.04)', {x: 10, y: 20}, 100, 0.1, 4),
   },
   containerReverse: {
-    backgroundColor: '#5C3661',
+    backgroundColor: '#fe7062',
   },
   text: {
-    color: '#5C3661',
+    color: '#1A1D5B',
   },
   textReverse: {
     color: '#FFFFFF',

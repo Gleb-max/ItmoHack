@@ -1,4 +1,4 @@
 export const apiConfig = {
-  // baseUrl: 'https://dda0da512240.ngrok.io/',
-  baseUrl: 'https://lo-v-et.herokuapp.com/',
+  baseUrl: 'https://ict-hack.azurewebsites.net/',
+  //baseUrl: 'https://lo-v-et.herokuapp.com/',
 };

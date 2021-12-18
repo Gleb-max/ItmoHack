@@ -104,11 +104,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   errorView: {
-    // width: '100%',
-    // height: '100%',
-    // backgroundColor: 'red',
+    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    borderRadius: 10,
+    width: '80%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  errorColor: {
+    color: 'red',
+    fontSize: 15,
   },
 });
 

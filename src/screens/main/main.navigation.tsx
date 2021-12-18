@@ -10,15 +10,14 @@ import {
 } from '@react-navigation/bottom-tabs';
 
 //tab screens
-import {HomeNavigation} from 'screens/HomeScreen';
-import {MedicineNavigation} from 'screens/MedicineScreen';
-import {HealthNavigation} from 'screens/HealthScreen';
-import {SearchNavigation} from 'screens/SearchScreen';
+// import {HomeNavigation} from 'screens/HomeScreen';
+import {RatingsNavigation} from 'screens/RatingsScreen';
+import {FieldNavigation} from 'screens/FieldScreen';
+import {ShopNavigation} from 'screens/ShopScreen';
 import {ProfileNavigation} from 'screens/ProfileScreen';
 
 //features navigators
-import {AddPetNavigation} from 'screens/AddPetScreen';
-import {AddMissingPetNavigation} from 'screens/AddMissingPetScreen';
+import {AchievementsNavigation} from 'screens/AchievementsScreen';
 
 //components
 import {TabBarContainer} from 'library/components/molecules';
@@ -34,25 +33,20 @@ type MainNavigationProps = {
 
 //routes
 const mapRouteNameToData: NavigationTypes.TabBarRouteMap = {
-  'main/home': {
-    route: 'main/home',
-    label: 'Home',
-    iconName: 'ic_tabbar_home',
+  'main/ratings': {
+    route: 'main/ratings',
+    label: 'Ratings',
+    iconName: 'ic_tabbar_rating',
   },
-  'main/medicine': {
-    route: 'main/medicine',
-    label: 'Medicine',
-    iconName: 'ic_tabbar_medicine',
+  'main/field': {
+    route: 'main/field',
+    label: 'Field',
+    iconName: 'ic_tabbar_field',
   },
-  'main/bone': {
-    route: 'main/bone',
-    label: 'Bone',
-    iconName: 'ic_tabbar_bone',
-  },
-  'main/search': {
-    route: 'main/search',
-    label: 'Search',
-    iconName: 'ic_tabbar_search',
+  'main/shop': {
+    route: 'main/shop',
+    label: 'Shop',
+    iconName: 'ic_tabbar_shop',
   },
   'main/profile': {
     route: 'main/profile',
@@ -63,20 +57,16 @@ const mapRouteNameToData: NavigationTypes.TabBarRouteMap = {
 
 const routes: NavigationTypes.TabBarRouteConfig[] = [
   {
-    ...mapRouteNameToData['main/home'],
-    screen: HomeNavigation,
+    ...mapRouteNameToData['main/ratings'],
+    screen: RatingsNavigation,
   },
   {
-    ...mapRouteNameToData['main/medicine'],
-    screen: MedicineNavigation,
+    ...mapRouteNameToData['main/field'],
+    screen: FieldNavigation,
   },
   {
-    ...mapRouteNameToData['main/bone'],
-    screen: HealthNavigation,
-  },
-  {
-    ...mapRouteNameToData['main/search'],
-    screen: SearchNavigation,
+    ...mapRouteNameToData['main/shop'],
+    screen: ShopNavigation,
   },
   {
     ...mapRouteNameToData['main/profile'],
@@ -89,10 +79,9 @@ const MainTabs = createBottomTabNavigator();
 
 export const MainNavigation: React.FC<MainNavigationProps> = ({
   notifications = {
-    'main/home': 0,
-    'main/medicine': 0,
-    'main/bone': 0,
-    'main/search': 0,
+    'main/ratings': 0,
+    'main/field': 0,
+    'main/shop': 0,
     'main/profile': 0,
   },
 }) => {
@@ -136,11 +125,7 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
     <MainNativeStack.Navigator
       screenOptions={{headerShown: false, stackAnimation: 'default'}}>
       <MainNativeStack.Screen name={'main'} component={_renderBottomTabBar} />
-      <MainNativeStack.Screen name={'add_pet'} component={AddPetNavigation} />
-      <MainNativeStack.Screen
-        name={'add_missing_pet'}
-        component={AddMissingPetNavigation}
-      />
+      <MainNativeStack.Screen name={'achievements'} component={AchievementsNavigation} />
     </MainNativeStack.Navigator>
   );
 };

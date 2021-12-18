@@ -12,18 +12,18 @@ export type CommonIconName =
   | 'ic_question'
   | 'ic_account'
   | 'ic_search'
-  | 'ic_arrow_left';
+  | 'ic_arrow_left'
+  | 'ic_error'
+  | 'ic_flag';
 
 export type TabBarIconName =
-  | 'ic_tabbar_home'
-  | 'ic_tabbar_home_active'
   | 'ic_tabbar_cursor'
-  | 'ic_tabbar_bone'
-  | 'ic_tabbar_bone_active'
-  | 'ic_tabbar_medicine'
-  | 'ic_tabbar_medicine_active'
-  | 'ic_tabbar_search'
-  | 'ic_tabbar_search_active'
+  | 'ic_tabbar_rating'
+  | 'ic_tabbar_rating_active'
+  | 'ic_tabbar_field'
+  | 'ic_tabbar_field_active'
+  | 'ic_tabbar_shop'
+  | 'ic_tabbar_shop_active'
   | 'ic_tabbar_profile'
   | 'ic_tabbar_profile_active';
 

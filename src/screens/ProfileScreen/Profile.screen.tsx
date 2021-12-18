@@ -1,5 +1,8 @@
 import React from 'react';
 
+//navigation
+import { useNavigation } from '@react-navigation/native';
+
 //redux
 import {store} from 'redux/store';
 
@@ -16,20 +19,35 @@ type ProfileScreenProps = {};
 const userData = {
   name: 'Мелания',
   surname: 'Д.',
-  photo: 'https://dl.dropboxusercontent.com/s/9tn5z54d72m1egr/Ellipse%2016.png',
+  photo: '',
 };
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({}) => {
-  //callbacks
+  //navigation
+	const navigation = useNavigation();
+
+	//callbacks
+	const _onAchievements = React.useCallback(() => {
+		navigation.navigate('achievements');
+	}, [navigation]);
+
   const _onLogout = () => store.dispatch(logout());
 
-  const _onAccount = () => console.log('account');
+  const [_profilePhoto, _setProfilePhoto] = React.useState<string>('https://dl.dropboxusercontent.com/s/9tn5z54d72m1egr/Ellipse%2016.png');
+
+  const setProfilePhoto = (val: string) => {
+    _setProfilePhoto(val);
+    userData.photo = val;
+  }
+
+  userData.photo = _profilePhoto;
 
   return (
     <ProfileView
       userData={userData}
       onLogout={_onLogout}
-      onAccount={_onAccount}
+      onAchievements={_onAchievements}
+      setProfilePhoto={setProfilePhoto}
     />
   );
 };

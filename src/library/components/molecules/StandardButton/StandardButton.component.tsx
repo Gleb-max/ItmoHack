@@ -6,7 +6,7 @@ import {TouchableOpacity, ViewStyle, StyleProp, TextStyle} from 'react-native';
 import styles from './StandardButton.styles';
 
 //components
-import {MontserratText} from 'library/components/atoms';
+import {RalewayText} from 'library/components/atoms';
 
 //types
 type StandardButtonProps = {
@@ -28,12 +28,12 @@ export const StandardButton: React.FC<StandardButtonProps> = ({
     <TouchableOpacity
       onPress={onPress}
       style={[styles.container, reverse && styles.containerReverse, style]}>
-      <MontserratText
+      <RalewayText
         type={'Semibold'}
         size={'m1'}
         style={[styles.text, reverse && styles.textReverse, textStyle]}>
         {text}
-      </MontserratText>
+      </RalewayText>
     </TouchableOpacity>
   );
 };

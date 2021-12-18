@@ -1,10 +1,10 @@
-const authLoading = (state = {}, action: any) => {
+const loading = (state = {}, action: any) => {
   switch (action.type) {
-    case 'AUTH_LOADING':
+    case 'LOADING':
       return {
         isAuthLoading: true,
       };
-    case 'AUTH_LOADING_CANCEL':
+    case 'LOADING_CANCEL':
       return {
         isAuthLoading: false,
       };
@@ -13,4 +13,4 @@ const authLoading = (state = {}, action: any) => {
   }
 };
 
-export default authLoading;
+export default loading;

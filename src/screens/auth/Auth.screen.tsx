@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {store} from 'redux/store';
 
 //actions
-import {login, register, restore, hideError, showError} from 'redux/actions';
+import {login, register, restore, error, errorCancel} from 'redux/actions';
 
 //views
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -19,7 +19,7 @@ type AuthScreenProps = {
 };
 
 //images
-import welcomeImage from '@assets/images/auth/welcome/image.png';
+import welcomeImage from '@assets/images/auth/welcome/image.jpg';
 import loginImage from '@assets/images/auth/login/image.png';
 import registerImage from '@assets/images/auth/register/image.png';
 // import restore from '@assets/images/auth/restore/image.png';
@@ -44,9 +44,6 @@ const authInfo: AuthItem[] = [
   },
 ];
 
-//values
-let currentIndex = 0;
-
 const AuthScreen: React.FC<AuthScreenProps> = ({
   isLoading = false,
   isError = false,
@@ -54,12 +51,11 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
 }) => {
   console.log(isLoading);
   //state
-  const [_activeIndex, _setActiveIndex] = React.useState(currentIndex);
+  const [_activeIndex, _setActiveIndex] = React.useState(0);
 
   //callbacks
   const setActiveIndex = (index: number) => {
-    currentIndex = index;
-    _setActiveIndex(currentIndex);
+    _setActiveIndex(index);
   };
 
   return (
@@ -73,18 +69,17 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
       isLoading={isLoading}
       isError={isError}
       errorMessage={errorMessage}
-      hideError={() => store.dispatch(hideError())}
-      showError={(data: {}) => store.dispatch(showError(data))}
+      hideError={() => store.dispatch(errorCancel())}
+      showError={(data: {}) => store.dispatch(error(data))}
     />
   );
 };
 
 const mapStateToProps = (state: any) => {
-  const authData = state.authReducer.authData;
   return {
     isLoading: state.loadingReducer.isAuthLoading || false,
-    isError: authData.isError || false,
-    errorMessage: authData.errorMessage || '',
+    isError: state.errorReducer.isError || false,
+    errorMessage: state.errorReducer.errorMessage || '',
   };
 };
 

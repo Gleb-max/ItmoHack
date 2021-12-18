@@ -41,9 +41,8 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
 
 const mapStateToProps = (state: any) => {
   console.log(state);
-  const authData = state.authReducer.authData;
   return {
-    isLoggedIn: authData.isLoggedIn,
+    isLoggedIn: state.authReducer.authData.isLoggedIn,
     isWelcomeComplete: state.welcomeReducer.isWelcomeComplete,
   };
 };

@@ -3,19 +3,21 @@ import API from '../../api/server';
 export const register = (payload: any) => {
   return async (dispatch: any) => {
     dispatch({
-      type: 'AUTH_LOADING',
+      type: 'LOADING',
     });
     const formData = new FormData();
+    formData.append('isuId', payload.isuId);
     formData.append('name', payload.name);
-    formData.append('nick', payload.nickName);
-    formData.append('email', payload.email);
+    formData.append('facultyId', payload.faculty);
     formData.append('password', payload.password);
 
-    API.post('api/auth/register', formData, {})
+    API.post('api/User', formData, {})
       .then((response) => {
-        console.log(response.data.token);
+        console.log(response.data);
+
+        //todo: auto login
         dispatch({
-          type: 'AUTH_LOADING_CANCEL',
+          type: 'LOADING_CANCEL',
         });
         dispatch({
           type: 'AUTH_USER_SUCCESS',
@@ -26,7 +28,7 @@ export const register = (payload: any) => {
         let message = 'Проверьте подключение к интернету';
 
         console.log(error.response.data);
-        switch (error.response.data.error) {
+        switch (error.response.data.authData) {
           case 'Required fields not filling':
             message = 'Не все поля заполнены';
             break;
@@ -41,10 +43,10 @@ export const register = (payload: any) => {
             break;
         }
         dispatch({
-          type: 'AUTH_LOADING_CANCEL',
+          type: 'LOADING_CANCEL',
         });
         dispatch({
-          type: 'AUTH_USER_ERROR',
+          type: 'ERROR',
           errorMessage: message,
         });
       });
@@ -54,17 +56,18 @@ export const register = (payload: any) => {
 export const login = (payload: any) => {
   return async (dispatch: any) => {
     dispatch({
-      type: 'AUTH_LOADING',
+      type: 'LOADING',
     });
-    const formData = new FormData();
-    formData.append('login', payload.nickNameOrEmail);
-    formData.append('password', payload.password);
+    const params = {
+      ISUId: payload.isuId,
+      Password: payload.password,
+    }
 
-    API.post('api/auth/token/', formData, {})
+    API.get('api/auth/token/', {params: params})
       .then((response) => {
-        console.log(response.data.token);
+        //console.log(response.data.token);
         dispatch({
-          type: 'AUTH_LOADING_CANCEL',
+          type: 'LOADING_CANCEL',
         });
         dispatch({
           type: 'AUTH_USER_SUCCESS',
@@ -72,29 +75,24 @@ export const login = (payload: any) => {
         });
       })
       .catch((error) => {
-        let message = 'Проверьте подключение к интернету';
+        console.log(error.response);
+        let message;
 
-        console.log(error);
-        console.log(error.response.data);
-        switch (error.response.data.error) {
-          case 'Required fields not filling':
-            message = 'Не все поля заполнены';
-            break;
-          case 'User not found':
-            message = 'Пользователь не найден';
-            break;
-          case 'Incorrect password':
-            message = 'Неверный пароль';
-            break;
-          default:
-            message = 'Неизвестная ошибка';
-            break;
+        if (error.response == undefined) {
+          message = 'Проверьте подключение к интернету';
         }
+        else if (error.response && error.response.data.Message != undefined) {
+          message = error.response.data.Message[0];
+        }
+        else if (error.response.status == 400) {
+          message = 'Не все поля заполнены!';
+        }
+
         dispatch({
-          type: 'AUTH_LOADING_CANCEL',
+          type: 'LOADING_CANCEL',
         });
         dispatch({
-          type: 'AUTH_USER_ERROR',
+          type: 'ERROR',
           errorMessage: message,
         });
       });
@@ -104,16 +102,15 @@ export const login = (payload: any) => {
 export const restore = (payload: any) => {
   return async (dispatch: any) => {
     dispatch({
-      type: 'AUTH_LOADING',
+      type: 'LOADING',
     });
     const formData = new FormData();
     formData.append('email', payload.email);
 
     API.post('client/restore/', formData, {})
       .then((response) => {
-        console.log(response.data);
         dispatch({
-          type: 'AUTH_LOADING_CANCEL',
+          type: 'LOADING_CANCEL',
         });
       })
       .catch((error) => {
@@ -126,10 +123,10 @@ export const restore = (payload: any) => {
             break;
         }
         dispatch({
-          type: 'AUTH_LOADING_CANCEL',
+          type: 'LOADING_CANCEL',
         });
         dispatch({
-          type: 'AUTH_USER_ERROR',
+          type: 'ERROR',
           errorMessage: message,
         });
       });
@@ -140,23 +137,6 @@ export const logout = () => {
   return async (dispatch: any) => {
     dispatch({
       type: 'USER_LOGGED_OUT_SUCCESS',
-    });
-  };
-};
-
-export const hideError = () => {
-  return async (dispatch: any) => {
-    dispatch({
-      type: 'AUTH_USER_ERROR_HIDE',
-    });
-  };
-};
-
-export const showError = (payload: any) => {
-  return async (dispatch: any) => {
-    dispatch({
-      type: 'AUTH_USER_ERROR',
-      errorMessage: payload.message,
     });
   };
 };

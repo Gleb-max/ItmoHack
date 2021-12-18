@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   linkText: {
-    color: '#161844',
+    color: '#1a0f91',
     textDecorationLine: 'underline',
   },
 });

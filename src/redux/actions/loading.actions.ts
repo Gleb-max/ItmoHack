@@ -1,15 +1,15 @@
-export const authLoading = () => {
+export const loading = () => {
   return async (dispatch: any) => {
     dispatch({
-      type: 'AUTH_LOADING',
+      type: 'LOADING',
     });
   };
 };
 
-export const authLoadingCancel = () => {
+export const loadingCancel = () => {
   return async (dispatch: any) => {
     dispatch({
-      type: 'AUTH_LOADING_CANCEL',
+      type: 'LOADING_CANCEL',
     });
   };
 };

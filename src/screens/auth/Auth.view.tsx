@@ -6,9 +6,6 @@ import {
   ScrollView,
   BackHandler,
   StatusBar,
-  Modal,
-  Text,
-  TouchableWithoutFeedback,
 } from 'react-native';
 
 //other deps
@@ -27,6 +24,7 @@ import {
   AppFeatureImage,
   AppFeatureText,
   LoaderOverlay,
+  ErrorAlert,
 } from 'library/components';
 
 //styles
@@ -67,11 +65,6 @@ export type AuthItem = {
   type: 'welcome' | 'login' | 'register' | 'restore';
   image: NodeModule;
 };
-
-//values
-let firstIndex = -1;
-let lastIndex = -1;
-let deque: number[] = [];
 
 const authFieldsContent: AuthFields = {
   login: {
@@ -138,7 +131,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
   };
 
   const requireFilling = () => {
-    showError({message: 'Не все поля заполнены'});
+    showError({message: 'Не все поля заполнены!'});
   };
 
   //callbacks
@@ -147,31 +140,20 @@ export const AuthView: React.FC<AuthViewProps> = ({
   };
 
   const _goTo = (index: number) => {
-    if (firstIndex === -1) {
-      firstIndex = index;
-    } else if (lastIndex !== -1) {
-      deque.push(lastIndex);
-    }
-    lastIndex = index;
     refCarousel.current.snapToItem(index, false);
+    //setActiveIndex(index);
   };
 
   //effects
   React.useEffect(() => {
     const backAction = () => {
-      if (firstIndex === -1) {
+      if (isLoading) return;
+      if (activeIndex == 0) {
         BackHandler.exitApp();
-      } else if (activeIndex === firstIndex) {
-        deque = [];
-        BackHandler.exitApp();
-      } else {
-        let last = deque.pop();
-        if (last === undefined) {
-          BackHandler.exitApp();
-        } else {
-          refCarousel.current.snapToItem(last, false);
-          lastIndex = last;
-        }
+      }
+      else {
+        //refCarousel.current.snapToItem(0, false);
+        _goTo(0);
       }
       return true;
     };
@@ -180,7 +162,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
       backAction,
     );
     return () => backHandler.remove();
-  }, [activeIndex, refCarousel]);
+  }, [activeIndex, refCarousel, isLoading]);
 
   //renders
   const _renderItem = ({item, index}: any) => {
@@ -243,7 +225,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         <View style={styles.authFormContainer}>
           <View style={styles.titleGroup}>
             <AuthTitle text={'Вход'} style={styles.title} />
-            {/* <AuthImage logo={item.image} style={styles.imageLogin} /> */}
+            <AuthImage logo={item.image} style={styles.imageLogin} />
           </View>
           <AuthForm style={styles.authForm}>
             <CustomTextInput
@@ -253,7 +235,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
               }}
               style={styles.authField}
               renderType={'clear'}
-              placeholder={'Ваш ISU ID'}
+              keyboardType={'numeric'}
+              placeholder={'Ваш номер ИСУ'}
             />
             <CustomTextInput
               value={authFieldsContent.login.password}
@@ -263,6 +246,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
               }}
               style={styles.authField}
               isPassword={true}
+              keyboardType={'numeric'}
               renderType={'visible'}
               placeholder={'Пароль'}
             />
@@ -296,18 +280,19 @@ export const AuthView: React.FC<AuthViewProps> = ({
         <View style={styles.authFormContainer}>
           <View style={styles.titleGroup}>
             <AuthTitle text={'Регистрация'} style={styles.title} />
-            {/* <AuthImage logo={item.image} style={styles.imageRegister} /> */}
+            <AuthImage logo={item.image} style={styles.imageRegister} />
           </View>
           <AuthForm style={styles.authForm}>
             <CustomTextInput
               value={authFieldsContent.register.isuId}
               autoCapitalize={'sentences'}
+              keyboardType={'numeric'}
               onChange={(text: string) => {
                 authFieldsContent.register.isuId = text;
               }}
               style={styles.authField}
               renderType={'clear'}
-              placeholder={'Ваш ISU ID'}
+              placeholder={'Ваш номер ИСУ'}
             />
             <CustomTextInput
               value={authFieldsContent.register.name}
@@ -326,9 +311,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
                 authFieldsContent.register.faculty = text;
               }}
               style={styles.authField}
-              keyboardType={'email-address'}
               renderType={'clear'}
-              placeholder={'Ваша почта'}
+              placeholder={'Факультет'}
             />
             <CustomTextInput
               value={authFieldsContent.register.password}
@@ -377,9 +361,9 @@ export const AuthView: React.FC<AuthViewProps> = ({
                 authFieldsContent.restore.isuId = text;
               }}
               style={styles.authField}
-              keyboardType={'email-address'}
+              keyboardType={'numeric'}
               renderType={'clear'}
-              placeholder={'Ваш ISU ID'}
+              placeholder={'Ваш номер ИСУ'}
             />
           </AuthForm>
         </View>
@@ -393,7 +377,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
             size={'m2'}
             type={'Medium'}
             styleText={styles.restoreText}>
-            На указанную почту придет ссылка для получения нового пароля
+            В ИСУ придет ссылка для получения нового пароля
           </MontserratText>
         </View>
       </View>
@@ -402,7 +386,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   return (
     <LinearGradient
-      colors={['#FFCFB4', '#8D5B94']}
+      colors={['#FF9F99', '#9C9CFF']}
       style={styles.container}
       start={{x: 0, y: 0}}
       onLayout={_onLayout}
@@ -427,23 +411,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         inactiveSlideScale={1}
         onSnapToItem={(slideIndex: number) => setActiveIndex(slideIndex)}
       />
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isError}
-        style={styles.modalContainer}
-        onRequestClose={hideError}>
-        <TouchableOpacity
-          style={styles.errorOpacity}
-          activeOpacity={1}
-          onPressOut={hideError}>
-          <TouchableWithoutFeedback>
-            <View style={styles.errorView}>
-              <Text>{errorMessage}</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        </TouchableOpacity>
-      </Modal>
+      <ErrorAlert isShow={isError} onHide={hideError} message={errorMessage} />
     </LinearGradient>
   );
 };

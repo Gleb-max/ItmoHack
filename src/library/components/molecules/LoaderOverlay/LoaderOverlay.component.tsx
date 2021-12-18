@@ -18,7 +18,7 @@ type LoaderOverlayProps = {
 
 export const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
   size = 'small',
-  color = '#5C3661',
+  color = '#ff7366',
   style,
   loaderStyle,
 }) => {
