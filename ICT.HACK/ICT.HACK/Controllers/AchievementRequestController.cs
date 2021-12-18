@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ICT.HACK.Controllers
 {
     [Route("api/requests")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
+    [Authorize("Everyone")]
     public class AchievementRequestController : ControllerBase
     {
         private const int RequestsOnPage = 10;
@@ -68,7 +68,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AchievementRequestResponse>> GetAsync(string id)
+        public async Task<ActionResult<AchievementRequestResponse>> GetAsync([FromRoute] string id)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
@@ -130,12 +130,11 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync(string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 
-            string userId = User.FindFirst(Program.Configuration["UserClaims:Id"]).Value;
-            if (Guid.TryParse(userId, out var guid) == false)
+            if (Guid.TryParse(id, out var guid) == false)
             {
                 ModelState.AddModelError("Message", "Неверный claim:userid.");
                 return BadRequest(ModelState);

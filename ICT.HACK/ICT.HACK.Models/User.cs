@@ -14,9 +14,13 @@ namespace ICT.HACK.Models
 
         public Statistics Statistics { get; set; }
 
+        public int Balance { get; set; }
+
         public IEnumerable<Achievement> Achievements { get; set; }
 
         public IEnumerable<AchievementRequest> AchievementsRequests { get; set; }
+
+        public IEnumerable<Purchase> Purchases { get; set; }
 
         public Faculty Faculty { get; set; }
         public Guid? FacultyId { get; set; }

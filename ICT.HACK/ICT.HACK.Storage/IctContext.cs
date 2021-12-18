@@ -24,8 +24,9 @@ namespace ICT.HACK.Storage
                 e.HasKey(u => u.Id);
                 e.HasAlternateKey(u => u.ISUId);
                 e.Property(u => u.Id).HasDefaultValueSql("NEWID()");
+                e.Property(u => u.FacultyId).IsRequired(false);
                 e.HasOne(u => u.Role).WithMany().HasForeignKey(u => u.RoleId);
-                e.HasOne(u => u.Faculty).WithMany(f => f.Students).HasForeignKey(u => u.FacultyId);
+                e.HasOne(u => u.Faculty).WithMany(f => f.Students).HasForeignKey(u => u.FacultyId).OnDelete(DeleteBehavior.SetNull);
                 e.HasOne(u => u.Statistics).WithOne().HasForeignKey<Statistics>(s => s.OwnerId);
             });
 
@@ -55,7 +56,19 @@ namespace ICT.HACK.Storage
                 e.HasOne(a => a.Owner).WithMany(u => u.AchievementsRequests).HasForeignKey(a => a.OwnerId);
             });
 
-            
+            modelBuilder.Entity<Product>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.Property(p => p.Id).HasDefaultValueSql("NEWID()");
+            });
+
+            modelBuilder.Entity<Purchase>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.Property(p => p.Id).HasDefaultValueSql("NEWID()");
+                e.HasOne(p => p.Buyer).WithMany(u => u.Purchases).HasForeignKey(p => p.BuyerId);
+                e.HasOne(p => p.Product).WithMany(p => p.Purchases).HasForeignKey(p => p.ProductId);
+            });
 
             base.OnModelCreating(modelBuilder);
         }

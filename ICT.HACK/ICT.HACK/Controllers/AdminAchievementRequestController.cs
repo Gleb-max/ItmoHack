@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ICT.HACK.Controllers
 {
     [Route("api/admin/requests")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [ApiController]
+    [Authorize("Admin")]
     public class AdminAchievementRequestController : ControllerBase
     {
         private const int RequestsOnPage = 10;
@@ -60,11 +60,12 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync(string id, [FromBody] EditAchievementRequestRequest editData)
+        public async Task<ActionResult> PutAsync([FromRoute] string id, [FromBody] EditAchievementRequestRequest editData)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
             var achievementRepository = _serviceProvider.GetRequiredService<IRepository<Achievement>>();
             var statisticsRepository = _serviceProvider.GetRequiredService<IRepository<Statistics>>();
+            var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
             if (Guid.TryParse(id, out var guid) == false)
             {
@@ -93,8 +94,10 @@ namespace ICT.HACK.Controllers
                     Points = request.Points,
                     Sphere = editData.Sphere,
                     OwnerId = request.OwnerId,
+                    ConfirmedDate = DateTime.Today
                 };
 
+                request.Owner.Balance += request.Points;
                 switch (editData.Sphere)
                 {
                     case AchievementSpheres.Physical: request.Owner.Statistics.Physical += request.Points; break;
@@ -106,9 +109,11 @@ namespace ICT.HACK.Controllers
 
                 await achievementRepository.AddAsync(achievement);
                 statisticsRepository.Edit(request.Owner.Statistics);
+                userRepository.Edit(request.Owner);
 
                 await achievementRepository.SaveAsync();
                 await statisticsRepository.SaveAsync();
+                await userRepository.SaveAsync();
             }
 
             achievementRequestRepository.Edit(request);
@@ -118,7 +123,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync(string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
         {
             var achievementRequestRepository = _serviceProvider.GetRequiredService<IRepository<AchievementRequest>>();
 

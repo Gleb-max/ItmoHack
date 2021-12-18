@@ -2,7 +2,6 @@
 using ICT.HACK.Storage.Abstractions;
 using ICT.HACK.ViewModels.Request;
 using ICT.HACK.ViewModels.Response;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +11,10 @@ namespace ICT.HACK.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize("Everyone")]
     public class UserController : ControllerBase
     {
-        private const int UsersCountInTop = 10;
+        private const int CountUsersInTop = 10;
 
         private readonly IServiceProvider _serviceProvider;
 
@@ -36,7 +35,8 @@ namespace ICT.HACK.Controllers
                                                   u.Statistics.Technical +
                                                   u.Statistics.Humanities +
                                                   u.Statistics.Natural +
-                                                  u.Statistics.SoftSkills));
+                                                  u.Statistics.SoftSkills))
+                         .Take(CountUsersInTop);
 
             IEnumerable<UsersResponse.ShortUserResponse> users = query.Select(u => new UsersResponse.ShortUserResponse()
             {
@@ -57,7 +57,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserResponse>> Get(string id)
+        public async Task<ActionResult<UserResponse>> GetAsync([FromRoute] string id)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
@@ -81,6 +81,7 @@ namespace ICT.HACK.Controllers
                 Humanities = user.Statistics.Humanities,
                 SoftSkills = user.Statistics.SoftSkills,
                 Technical = user.Statistics.Technical,
+                Balance = user.Balance
             };
 
             return Ok(response);
@@ -88,7 +89,7 @@ namespace ICT.HACK.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> PostAsync(RegistrationRequest registrationData)
+        public async Task<ActionResult> PostAsync([FromBody] RegistrationRequest registrationData)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
@@ -99,6 +100,12 @@ namespace ICT.HACK.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (Guid.TryParse(registrationData.FacultyId, out var facultyGuid) == false)
+            {
+                ModelState.AddModelError("Message", "Неверный формат facultyId.");
+                return BadRequest(ModelState);
+            }
+
             bool isUserExist = await userRepository.Query().AnyAsync(u => u.ISUId == registrationData.ISUId);
             if (isUserExist)
             {
@@ -106,7 +113,7 @@ namespace ICT.HACK.Controllers
                 return BadRequest(ModelState);
             }
 
-            Faculty faculty = await facultyRepository.FindAsync(Guid.Parse(registrationData.FacultyId));
+            Faculty faculty = await facultyRepository.FindAsync(facultyGuid);
             if (faculty == null)
             {
                 ModelState.AddModelError("Message", "Такого факультета не существует.");
@@ -135,7 +142,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync(string id, [FromBody] EditUserRequest editData)
+        public async Task<ActionResult> PutAsync([FromRoute] string id, [FromBody] EditUserRequest editData)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
@@ -175,7 +182,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync(string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 

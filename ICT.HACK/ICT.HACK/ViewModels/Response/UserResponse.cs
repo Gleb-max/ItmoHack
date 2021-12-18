@@ -12,6 +12,8 @@
 
         public string Role { get; set; }
 
+        public int Balance { get; set; }
+
         public int Physical { get; set; }
 
         public int Technical { get; set; }

@@ -11,7 +11,7 @@ namespace ICT.HACK.Controllers
 {
     [Route("api/faculty")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize("Everyone")]
     public class FacultyController : ControllerBase
     {
         private readonly IServiceProvider _serviceProvider;
@@ -22,7 +22,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FacultyResponse>> GetAsync(string id)
+        public async Task<ActionResult<FacultyResponse>> GetAsync([FromRoute] string id)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
@@ -70,7 +70,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [Authorize("Admin")]
         public async Task<ActionResult> PostAsync([FromBody] FacultyRequest facultyData)
         {
             if (!ModelState.IsValid)
@@ -97,8 +97,8 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<ActionResult> PutAsync(string id, [FromBody] EditFacultyRequest facultyData)
+        [Authorize("Admin")]
+        public async Task<ActionResult> PutAsync([FromRoute] string id, [FromBody] EditFacultyRequest facultyData)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 
@@ -124,8 +124,8 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> DeleteAsync(string id)
+        [Authorize("Admin")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
 

@@ -27,4 +27,8 @@
     <ProjectReference Include="..\ICT.HACK.Storage\ICT.HACK.Storage.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\products\" />
+  </ItemGroup>
+
 </Project>

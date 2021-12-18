@@ -15,6 +15,7 @@ namespace ICT.HACK
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
             Configuration = builder.Configuration;
 
             ConfigureServices(builder.Services);
@@ -32,20 +33,37 @@ namespace ICT.HACK
             services.AddControllers();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = true;
-                    options.TokenValidationParameters = new TokenValidationParameters()
+                    .AddJwtBearer(options =>
                     {
-                        ValidAudience = Configuration["JwtOptions:Audience"],
-                        ValidIssuer = Configuration["JwtOptions:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtOptions:SymmetricKey"])),
+                        options.RequireHttpsMetadata = true;
+                        options.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidAudience = Configuration["JwtOptions:Audience"],
+                            ValidIssuer = Configuration["JwtOptions:Issuer"],
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtOptions:SymmetricKey"])),
 
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateIssuerSigningKey = true
-                    };
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateIssuerSigningKey = true
+                        };
+                    });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Everyone", policy =>
+                {
+                    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(Configuration["UserClaims:Id"]);
                 });
+
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(Configuration["UserClaims:Id"]);
+                    policy.RequireRole("Admin");
+                });
+            });
 
             services.AddPasswordHasher();
 
@@ -89,6 +107,8 @@ namespace ICT.HACK
             app.UseSwaggerUI();
 
             app.UseCors(builder => builder.AllowAnyOrigin());
+
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 

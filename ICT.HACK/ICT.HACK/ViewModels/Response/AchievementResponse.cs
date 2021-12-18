@@ -1,10 +1,10 @@
 ﻿using ICT.HACK.Models.Enums;
 
-namespace ICT.HACK.Models
+namespace ICT.HACK.ViewModels.Response
 {
-    public class Achievement
+    public class AchievementResponse
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Name { get; set; }
 
@@ -16,7 +16,10 @@ namespace ICT.HACK.Models
 
         public DateTime ConfirmedDate { get; set; }
 
-        public User Owner { get; set; }
-        public Guid OwnerId { get; set; }
+        public string OwnerName { get; set; }
+
+        public string OwnerISUId { get; set; }
+
+        public string OwnerId { get; set; }
     }
 }

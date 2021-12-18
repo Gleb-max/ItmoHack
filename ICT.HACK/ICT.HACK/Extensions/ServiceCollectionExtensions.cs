@@ -39,6 +39,8 @@ namespace ICT.HACK.Extensions
             services.AddRepository<AchievementRequest>();
             services.AddRepository<Statistics>();
             services.AddRepository<Faculty>();
+            services.AddRepository<Product>();
+            services.AddRepository<Purchase>();
 
             return services;
         }
