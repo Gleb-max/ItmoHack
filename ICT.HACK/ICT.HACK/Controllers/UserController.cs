@@ -15,6 +15,7 @@ namespace ICT.HACK.Controllers
     public class UserController : ControllerBase
     {
         private const int CountUsersInTop = 10;
+        private const int MaxPagesInTop = 5;
 
         private readonly IServiceProvider _serviceProvider;
 
@@ -36,6 +37,7 @@ namespace ICT.HACK.Controllers
                                                   u.Statistics.Humanities +
                                                   u.Statistics.Natural +
                                                   u.Statistics.SoftSkills))
+                         .Skip(CountUsersInTop * searchOptions.Page)
                          .Take(CountUsersInTop);
 
             IEnumerable<UsersResponse.ShortUserResponse> users = query.Select(u => new UsersResponse.ShortUserResponse()

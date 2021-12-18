@@ -8,6 +8,8 @@
 
         public bool IsUsed { get; set; }
 
+        public string QRImageName { get; set; }
+
         public Product Product { get; set; }
         public Guid ProductId { get; set; }
 

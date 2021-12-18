@@ -5,7 +5,6 @@ namespace ICT.HACK.Storage
 {
     public sealed class IctContext : DbContext
     {
-
         public IctContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();
@@ -68,6 +67,21 @@ namespace ICT.HACK.Storage
                 e.Property(p => p.Id).HasDefaultValueSql("NEWID()");
                 e.HasOne(p => p.Buyer).WithMany(u => u.Purchases).HasForeignKey(p => p.BuyerId);
                 e.HasOne(p => p.Product).WithMany(p => p.Purchases).HasForeignKey(p => p.ProductId);
+            });
+
+            modelBuilder.Entity<Advertisement>(e =>
+            {
+                e.HasKey(a => a.Id);
+                e.Property(a => a.Id).HasDefaultValueSql("NEWID()");
+                e.HasOne(a => a.Creator).WithMany(u => u.Advertisements).HasForeignKey(a => a.CreatorId);
+            });
+
+            modelBuilder.Entity<Application>(e =>
+            {
+                e.HasKey(a => a.Id);
+                e.Property(a => a.Id).HasDefaultValueSql("NEWID()");
+                e.HasOne(a => a.Advertisement).WithMany().HasForeignKey(a => a.AdvertisementId);
+                e.HasOne(a => a.Creator).WithMany().HasForeignKey(a => a.CreatorId);
             });
 
             base.OnModelCreating(modelBuilder);

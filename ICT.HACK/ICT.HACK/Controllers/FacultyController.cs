@@ -59,6 +59,7 @@ namespace ICT.HACK.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<FacultiesResponse> Get()
         {
             var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
@@ -68,6 +69,31 @@ namespace ICT.HACK.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("top")]
+        public ActionResult<FacultiesTopResponse> GetTop()
+        {
+            var facultyRepository = _serviceProvider.GetRequiredService<IRepository<Faculty>>();
+
+            var faculties = facultyRepository.Query()
+                                             .Include(f => f.Students)
+                                             .Select(f => new FacultiesTopResponse.FacultyInTopResponse()
+                                             {
+                                                 Id = f.Id.ToString(),
+                                                 Name = f.Name,
+                                                 Points = f.Students.Sum(s => s.Statistics.Physical +
+                                                                              s.Statistics.Technical +
+                                                                              s.Statistics.Humanities +
+                                                                              s.Statistics.Natural +
+                                                                              s.Statistics.SoftSkills)
+                                             })
+                                             .AsEnumerable();
+            var response = new FacultiesTopResponse { Faculties = faculties };
+
+            return Ok(response);
+        }
+
 
         [HttpPost]
         [Authorize("Admin")]
@@ -137,7 +163,7 @@ namespace ICT.HACK.Controllers
 
             var faculty = await facultyRepository.FindAsync(guid);
             if (faculty == null)
-            { 
+            {
                 return NotFound();
             }
 

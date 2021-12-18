@@ -10,6 +10,6 @@
 
         public int Count { get; set; }
 
-        public byte[] Image { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

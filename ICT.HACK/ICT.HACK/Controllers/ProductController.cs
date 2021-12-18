@@ -16,10 +16,12 @@ namespace ICT.HACK.Controllers
         private const int CountProductsOnPage = 10;
 
         private readonly IServiceProvider _serviceProvider;
+        private readonly string _imagesPath;
 
         public ProductController(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            _imagesPath = Path.Combine(Program.Configuration[WebHostDefaults.ContentRootKey], "wwwroot", "img", "products");
         }
 
         [HttpGet]
@@ -77,7 +79,7 @@ namespace ICT.HACK.Controllers
 
         [HttpPost]
         [Authorize("Admin")]
-        public async Task<ActionResult<string>> PostAsync([FromBody] ProductRequest productData)
+        public async Task<ActionResult<string>> PostAsync([FromForm] ProductRequest productData)
         {
             var productRepository = _serviceProvider.GetRequiredService<IRepository<Product>>();
 
@@ -97,10 +99,9 @@ namespace ICT.HACK.Controllers
                 ImageName = $"{productData.Name}.jpg"
             };
 
-            string wwwroot = Program.Configuration[WebHostDefaults.ContentRootKey];
-            using (FileStream imageFile = new FileStream(Path.Combine(wwwroot, newProduct.ImageName), FileMode.Create))
+            using (FileStream imageFile = new FileStream(Path.Combine(_imagesPath, newProduct.ImageName), FileMode.Create))
             {
-                await imageFile.WriteAsync(productData.Image);
+                await productData.Image.CopyToAsync(imageFile);
             }
 
             await productRepository.AddAsync(newProduct);
@@ -143,9 +144,8 @@ namespace ICT.HACK.Controllers
 
             if (editData.Image != null)
             {
-                string wwwroot = Program.Configuration[WebHostDefaults.ContentRootKey];
-                try { System.IO.File.Delete(Path.Combine(wwwroot, oldImageName)); } catch { }
-                using (FileStream imageFile = new FileStream(Path.Combine(wwwroot, product.ImageName), FileMode.Create))
+                try { System.IO.File.Delete(Path.Combine(_imagesPath, oldImageName)); } catch { }
+                using (FileStream imageFile = new FileStream(Path.Combine(_imagesPath, product.ImageName), FileMode.Create))
                 {
                     await imageFile.WriteAsync(editData.Image);
                 }

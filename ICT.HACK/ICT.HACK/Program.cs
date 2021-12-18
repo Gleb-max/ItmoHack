@@ -1,4 +1,5 @@
 using ICT.HACK.Extensions;
+using ICT.HACK.Services;
 using ICT.HACK.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -99,6 +100,11 @@ namespace ICT.HACK
                     }
                 });
             });
+
+            string wwwroot = Program.Configuration[WebHostDefaults.ContentRootKey];
+            string path = Path.Combine(wwwroot, "wwwroot", "qr.jpg");
+            QRGenerator qrGen = new QRGenerator();
+            qrGen.SaveQRAsync(path, "Igor gay").Wait();
         }
 
         public static void Configure(WebApplication app)

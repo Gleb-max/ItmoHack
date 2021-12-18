@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ICT.HACK.Storage.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class // default repository
     {
         private readonly IctContext _context;
 

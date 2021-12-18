@@ -1,4 +1,6 @@
 ﻿using ICT.HACK.Models;
+using ICT.HACK.Services;
+using ICT.HACK.Services.Abstractions;
 using ICT.HACK.Storage.Abstractions;
 using ICT.HACK.Storage.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -7,15 +9,16 @@ namespace ICT.HACK.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        internal static IServiceCollection AddPasswordHasher(this IServiceCollection serviceCollection)
+        internal static IServiceCollection AddPasswordHasher(this IServiceCollection services)
         {
-            serviceCollection.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
-            return serviceCollection;
+            services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+
+            return services;
         }
 
-        internal static IServiceCollection AddRoles(this IServiceCollection serviceCollection)
+        internal static IServiceCollection AddRoles(this IServiceCollection services)
         {
-            var roleRepository = serviceCollection.BuildServiceProvider().GetRequiredService<IRepository<Role>>();
+            var roleRepository = services.BuildServiceProvider().GetRequiredService<IRepository<Role>>();
             if (roleRepository.Query().Any() == false)
             {
                 roleRepository.AddAsync(new Role()
@@ -28,7 +31,15 @@ namespace ICT.HACK.Extensions
                 }).Wait();
                 roleRepository.SaveAsync().Wait();
             }
-            return serviceCollection;
+
+            return services;
+        }
+
+        internal static IServiceCollection AddQRGenerator(this IServiceCollection services)
+        {
+            services.AddSingleton<IQRGenerator, QRGenerator>();
+
+            return services;
         }
 
         internal static IServiceCollection AddRepositories(this IServiceCollection services)
@@ -41,6 +52,8 @@ namespace ICT.HACK.Extensions
             services.AddRepository<Faculty>();
             services.AddRepository<Product>();
             services.AddRepository<Purchase>();
+            services.AddRepository<Advertisement>();
+            services.AddRepository<Application>();
 
             return services;
         }

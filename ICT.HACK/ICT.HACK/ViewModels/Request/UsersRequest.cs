@@ -2,6 +2,8 @@
 {
     public class UsersRequest
     {
+        public int Page { get; set; }
+
         public bool InFaculty { get; set; }
 
         public string? FacultyId { get; set; }

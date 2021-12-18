@@ -22,6 +22,8 @@ namespace ICT.HACK.Models
 
         public IEnumerable<Purchase> Purchases { get; set; }
 
+        public IEnumerable<Advertisement> Advertisements { get; set; }
+
         public Faculty Faculty { get; set; }
         public Guid? FacultyId { get; set; }
 

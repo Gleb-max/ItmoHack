@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
@@ -28,7 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ViewModels\Request\Get\" />
+    <Folder Include="ViewModels\Request\Put\" />
     <Folder Include="wwwroot\img\products\" />
+    <Folder Include="wwwroot\qr\purchases\" />
   </ItemGroup>
 
 </Project>
