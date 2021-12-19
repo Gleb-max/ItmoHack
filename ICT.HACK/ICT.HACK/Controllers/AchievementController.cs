@@ -1,9 +1,7 @@
 ﻿using ICT.HACK.Models;
-using ICT.HACK.Models.Enums;
 using ICT.HACK.Storage.Abstractions;
 using ICT.HACK.ViewModels.Request;
 using ICT.HACK.ViewModels.Response;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

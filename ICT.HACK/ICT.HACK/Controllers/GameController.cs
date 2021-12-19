@@ -20,12 +20,14 @@ namespace ICT.HACK.Controllers
 
         [HttpGet]
         [Route("ref")]
-        public ActionResult<string> GetReference()
+        public ActionResult GetReference()
         {
             string token = Request.Headers["Authorization"].First().Split(" ")[1];
-            string reference = $"{Request.Host}/wwwroot/game.html?token={token}";
+            //string reference = $"{Request.Host}/wwwroot/game.html?token={token}";
 
-            return Ok(reference);
+
+            var response = new { referenсe = $"https://8d13-77-234-209-96.ngrok.io?token={token}" };
+            return Ok(response);
         }
 
         [HttpGet]
@@ -41,12 +43,13 @@ namespace ICT.HACK.Controllers
 
             bool canPlay = await CheckPlayAvailability(userGuid);
 
-            return Ok(canPlay);
+            var response = new { available = canPlay };
+            return Ok(response);
         }
 
         [HttpPost]
         [Route("prize")]
-        public async Task<ActionResult<string>> PostPrize()
+        public async Task<ActionResult> PostPrize()
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
 
@@ -74,9 +77,9 @@ namespace ICT.HACK.Controllers
             userRepository.Edit(user);
             await userRepository.SaveAsync();
 
-            string message = $"Поздравляем! Вы получили {prizePoints} баллов.";
+            var response = new { message = $"Поздравляем! Вы получили {prizePoints} баллов." };
 
-            return Ok(message);
+            return Ok(response);
         }
 
         private async Task<bool> CheckPlayAvailability(Guid userGuid)

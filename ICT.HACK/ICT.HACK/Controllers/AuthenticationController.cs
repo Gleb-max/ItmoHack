@@ -25,7 +25,7 @@ namespace ICT.HACK.Controllers
 
         [HttpGet]
         [Route("token")]
-        public async Task<ActionResult<string>> GetAsync([FromQuery] LoginRequest loginData)
+        public async Task<ActionResult> GetAsync([FromQuery] LoginRequest loginData)
         {
             var userRepository = _serviceProvider.GetRequiredService<IRepository<User>>();
             var passwordHasher = _serviceProvider.GetRequiredService<IPasswordHasher<User>>();
@@ -62,7 +62,19 @@ namespace ICT.HACK.Controllers
                 signingCredentials: credentials);
             string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            return Ok(encodedJwt);
+            var response = new
+            {
+                token = encodedJwt,
+                data = new
+                {
+                    id = user.Id,
+                    isuid = user.ISUId,
+                    name = user.Name,
+                    role = user.Role.Name
+                }
+            };
+
+            return Ok(response);
         }
 
         private ClaimsIdentity GetUserIdentity(User user)

@@ -111,7 +111,11 @@ namespace ICT.HACK
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseCors(builder => builder.AllowAnyOrigin());
+            app.UseCors(builder => { 
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            });
 
             app.UseStaticFiles();
 
