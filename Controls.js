@@ -27,10 +27,9 @@ export default class Controls extends React.Component {
      };
 
      hideAlert = () => {
-         this.game.expoGame.canvas.style.zIndex = 10000;
       this.setState({
         showAlert: false
-      });
+    }, () => {this.game.expoGame.canvas.style.zIndex = 10000;});
     };
 
   componentDidMount() {
@@ -94,7 +93,7 @@ export default class Controls extends React.Component {
     this.game && this.game.onTouchesBegan(x, y);
 }
     onClick = ({ pageX: x, pageY: y}) => {
-        if (this.isMoving) return;
+        if (this.game.isMoving) return;
         this.canMove(() => {
             this.isMoving = true;
             this.game && this.game.onClick(x, y, (ended) => {

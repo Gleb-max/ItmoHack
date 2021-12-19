@@ -25,4 +25,8 @@ export default class Game {
     onClick = (x, y, callback) =>
     this.playable && this.playable.onClick(x, y, callback);
 
+    get isMoving() {
+        return this.playable.isMoving;
+    }
+
 }
