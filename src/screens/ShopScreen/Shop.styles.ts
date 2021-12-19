@@ -4,11 +4,12 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 60,
+    paddingBottom: 70,
     paddingHorizontal: 22,
   },
   card: {
-		marginTop: 30,
+		marginTop: 18,
+    marginBottom: 12,
 		...Helpers.boxShadow('rgba(0, 0, 0, 0.04)', { x: 10, y: 20 }, 100, 0.1, 4),
 	},
   flatListContainer: {

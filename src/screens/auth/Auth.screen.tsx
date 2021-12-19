@@ -79,7 +79,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
 
 const mapStateToProps = (state: any) => {
   return {
-    isLoading: state.loadingReducer.isAuthLoading || false,
+    isLoading: state.loadingReducer.isLoading || false,
     isError: state.errorReducer.isError || false,
     errorMessage: state.errorReducer.errorMessage || '',
     faculties: state.facultiesReducer.faculties || [],

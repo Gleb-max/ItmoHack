@@ -63,13 +63,15 @@ export const login = (payload: any) => {
 
     API.get('api/auth/token/', {params: params})
       .then((response) => {
-        console.log(response.data);
+        const responseData = response.data;
+
         dispatch({
           type: 'LOADING_CANCEL',
         });
         dispatch({
           type: 'AUTH_USER_SUCCESS',
-          token: response.data,
+          token: responseData.token,
+          userData: responseData.data,
         });
       })
       .catch((error) => {

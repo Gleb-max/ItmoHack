@@ -39,7 +39,11 @@ const styles = StyleSheet.create({
   },
   notificationButton: {
     marginLeft: 'auto',
-  }
+  },
+  chart: {
+		flex: 1,
+    minHeight: 100,
+	},
 });
 
 export default styles;

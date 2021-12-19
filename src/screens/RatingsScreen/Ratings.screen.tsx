@@ -34,7 +34,7 @@ export const RatingsScreen: React.FC<RatingsScreenProps> = ({
 const mapStateToProps = (state: any) => {
   return {
     token: state.authReducer.authData.token || '',
-    isLoading: state.loadingReducer.isRatingLoading || false,
+    isLoading: state.loadingReducer.isLoading || false,
     isError: state.errorReducer.isError || false,
     errorMessage: state.errorReducer.errorMessage || '',
     faculties: state.facultiesReducer.faculties || [],

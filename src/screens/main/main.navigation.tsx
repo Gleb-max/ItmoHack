@@ -22,6 +22,10 @@ import {AchievementsNavigation} from 'screens/AchievementsScreen';
 import {ProductNavigation} from 'screens/ProductScreen';
 import {NotificationsNavigation} from 'screens/NotificationsScreen';
 import {RatingItemNavigation} from 'screens/RatingItemScreen';
+import {EventDetailsNavigation} from 'screens/EventDetailsScreen';
+import {AddAchievementNavigation} from 'screens/AddAchievementScreen';
+import {AchievementCategoryNavigation} from 'screens/AchievementCategoryScreen';
+import {AchievementDetailNavigation} from 'screens/AchievementDetailScreen';
 
 //components
 import {TabBarContainer} from 'library/components/molecules';
@@ -143,6 +147,10 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
       <MainNativeStack.Screen name={'product'} component={ProductNavigation} />
       <MainNativeStack.Screen name={'notifications'} component={NotificationsNavigation} />
       <MainNativeStack.Screen name={'rating_item'} component={RatingItemNavigation} />
+      <MainNativeStack.Screen name={'event_item'} component={EventDetailsNavigation} />
+      <MainNativeStack.Screen name={'add_achievement'} component={AddAchievementNavigation} />
+      <MainNativeStack.Screen name={'achievement_category'} component={AchievementCategoryNavigation} />
+      <MainNativeStack.Screen name={'achievement_item'} component={AchievementDetailNavigation} />
     </MainNativeStack.Navigator>
   );
 };

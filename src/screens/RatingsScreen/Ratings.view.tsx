@@ -31,34 +31,48 @@ export const RatingsView: React.FC<RatingsViewProps> = ({
 }) => {
 	//state
 	const [switchItem, setSwitchItem] = React.useState('students');
-	const [page, setPage] = React.useState(0);
-	const [data, setData] = React.useState([]);
+	const [data, setData] = React.useState({data: [], page: 0, isLoading: false});
 	const [showFacultyDropDown, setShowFacultyDropDown] = React.useState(false);
+	const [extra, setExtra] = React.useState(true);
 	const [currentFaculty, setCurrentFaculty] = React.useState('');
 
 	//effect
 	React.useEffect(() => {
-		loadMoreData();
+		loadMoreData("students", 0);
 	}, []);
+	React.useEffect(() => {
+		if (!data.isLoading) return;
+		store.dispatch(loadingCancel());
+	}, [data]);
 
   	const activeTextColor = () => {
 		return switchItem === 'students' ? '#ff7366' : (switchItem === 'faculty' ? '#4647ed' : '#1A1D5B');
 	};
 
 	const updateSwitchItem = (item: string) => {
+		if (item === switchItem) return;
+		// setData([]);
+		setData({data:[], page:0, isLoading: false});
 		setSwitchItem(item);
-		setData([]);
-		setPage(0);
 		setShowFacultyDropDown(item === "faculty" ? true : false);
 		if (item === "faculty" && currentFaculty === '') return;
-		loadMoreData();
+		loadMoreData(item, 0);
 	}
 
 	const updateFacultyItem = (item: {label: string, value: string}) => {
-		setData([]);
-		setPage(0);
+		if (item.value === currentFaculty) return;
+		// setData([]);
+		setData({data:[], page:0, isLoading: false});
 		setCurrentFaculty(item.value);
-		loadMoreData();
+		loadFaculty(item.value, 0);
+	}
+
+	const addData = (newData: [], force: boolean = false) => {
+		if (force) {
+			setData({data: newData, page: 1, isLoading: true});
+			return;
+		}
+		setData({data: [...data.data, ...newData], page:data.page + 1, isLoading: true});
 	}
 
   //renders
@@ -73,30 +87,47 @@ export const RatingsView: React.FC<RatingsViewProps> = ({
 		);
 	}, [data]);
 
-	const loadMoreData = () => {
+	const _renderList = React.useCallback(() => {
+		return (
+			<FlatList<RatingItem>
+				data={data.data}
+				renderItem={_renderListItem}
+				keyExtractor={(item: RatingItem, index: number) => item.id}
+				showsVerticalScrollIndicator={false}
+				onEndReached={() => loadMoreData(switchItem, data.page)}
+				onEndReachedThreshold ={0.1}
+				// ItemSeparatorComponent={() => <View style={styles.separator} />}
+				contentContainerStyle={styles.flatListContainer}
+			/>
+		);
+	}, [data]);
+
+	const loadMoreData = (item: string, page: number) => {
+		if (isLoading) return;
 		store.dispatch(loading());
 
-		switch (switchItem) {
+		switch (item) {
 			case 'students':
-				loadStudents();
+				loadStudents(page);
 				break;
 			case 'faculty':
-				loadFaculty();
+				loadFaculty(currentFaculty, page);
 				break;
 			case 'faculties':
-				loadFaculties();
+				loadFaculties(page);
 				break;
 		}
 	}
 
-	const loadStudents = () => {
+	const loadStudents = (page: number) => {
+		if (isLoading) return;
+		console.log("loadStudents sosssososo")
+		console.log(data.data.length)
 		fetch(`${apiConfig.baseUrl}api/User?Page=${page}`, {headers: {Authorization: `Bearer ${token}`}})
           .then(response => response.json())
           .then(responseJson => {
-			  console.log(data.length);
-			  setData([...data, ...responseJson.users]);
-			  if (responseJson.users.length !== 0) setPage(page + 1)
-			store.dispatch(loadingCancel());
+			  if (responseJson.users.length !== 0) addData(responseJson.users, page === 0)
+			  else store.dispatch(loadingCancel());
           })
           .catch(err => {
 			store.dispatch(loadingCancel());
@@ -104,14 +135,16 @@ export const RatingsView: React.FC<RatingsViewProps> = ({
           });
 	}
 
-	const loadFaculty = () => {
-		fetch(`${apiConfig.baseUrl}api/User?Page=${page}&InFaculty=true&FacultyId=${currentFaculty}`, {headers: {Authorization: `Bearer ${token}`}})
+	const loadFaculty = (faculty: string, page: number) => {
+		console.log("loadFaculty hshshshshshshshhs")
+		console.log(data.data.length)
+		// setData([])
+		fetch(`${apiConfig.baseUrl}api/User?Page=${page}&InFaculty=true&FacultyId=${faculty}`, {headers: {Authorization: `Bearer ${token}`}})
           .then(response => response.json())
           .then(responseJson => {
-			  console.log(data.length);
-			  setData([...data, ...responseJson.users]);
-			  if (responseJson.users.length !== 0) setPage(page + 1)
-			store.dispatch(loadingCancel());
+			setExtra(!extra);
+			  if (responseJson.users.length !== 0) addData(responseJson.users, page === 0)
+			  else store.dispatch(loadingCancel());
           })
           .catch(err => {
 			store.dispatch(loadingCancel());
@@ -119,13 +152,16 @@ export const RatingsView: React.FC<RatingsViewProps> = ({
           });
 	}
 
-	const loadFaculties = () => {
+	const loadFaculties = (page: number) => {
+		console.log("loadFaculies aaaasazzzxxzaaaa")
+		console.log(data.data.length)
+		// setData([])
 		fetch(`${apiConfig.baseUrl}api/faculty/top?Page=${page}`, {headers: {Authorization: `Bearer ${token}`}})
           .then(response => response.json())
           .then(responseJson => {
-			  setData([...data, ...responseJson.faculties]);
-			  if (responseJson.faculties.length !== 0) setPage(page + 1)
-			store.dispatch(loadingCancel());
+			  if (responseJson.faculties.length !== 0) addData(responseJson.faculties, page === 0)
+			  else store.dispatch(loadingCancel());
+
           })
           .catch(err => {
 			store.dispatch(loadingCancel());
@@ -176,16 +212,9 @@ export const RatingsView: React.FC<RatingsViewProps> = ({
 				style={styles.dropdown}
 			/>
 		}
-		<FlatList<RatingItem>
-			data={data}
-			renderItem={_renderListItem}
-			keyExtractor={(item: RatingItem, index: number) => item.id}
-			showsVerticalScrollIndicator={false}
-			onEndReached={loadMoreData}
-			onEndReachedThreshold ={0.1}
-			// ItemSeparatorComponent={() => <View style={styles.separator} />}
-			contentContainerStyle={styles.flatListContainer}
-		/>
+
+		{_renderList()}
+		
     </View>
 	</>
   );

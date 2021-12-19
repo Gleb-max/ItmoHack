@@ -43,7 +43,7 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({
 const mapStateToProps = (state: any) => {
   return {
     token: state.authReducer.authData.token || '',
-    isLoading: state.loadingReducer.isRatingLoading || false,
+    isLoading: state.loadingReducer.isLoading || false,
   };
 };
 

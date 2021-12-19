@@ -11,18 +11,36 @@ import {logout} from 'redux/actions';
 
 //views
 import {ProfileView} from './Profile.view';
+import { connect } from 'react-redux';
 
 //types
-type ProfileScreenProps = {};
-
-//constants
-const userData = {
-  name: 'Мелания',
-  surname: 'Д.',
-  photo: '',
+type ProfileScreenProps = {
+  token?: string;
+  userData?: {
+    id: string;
+    isuid: string;
+    name: string;
+    photo: string;
+    role: string;
+  };
+  isLoading?: boolean;
+  isError?: boolean;
+  errorMessage?: string;
 };
 
-export const ProfileScreen: React.FC<ProfileScreenProps> = ({}) => {
+export const ProfileScreen: React.FC<ProfileScreenProps> = ({
+  token = '',
+  userData = {
+    id: '',
+    isuid: '',
+    name: '',
+    photo: '',
+    role: '',
+  },
+  isLoading = false, 
+  isError = false, 
+  errorMessage = ''
+}) => {
   //navigation
 	const navigation = useNavigation();
 
@@ -37,17 +55,18 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({}) => {
 
   const _onLogout = () => store.dispatch(logout());
 
-  const [_profilePhoto, _setProfilePhoto] = React.useState<string>('https://dl.dropboxusercontent.com/s/9tn5z54d72m1egr/Ellipse%2016.png');
+  const [_profilePhoto, _setProfilePhoto] = React.useState<string>('https://avatanplus.com/files/resources/mid/5c8bc5ef96f7b16981fd3002.png');
 
   const setProfilePhoto = (val: string) => {
     _setProfilePhoto(val);
-    userData.photo = val;
+    // userData.photo = val;
   }
-
+  
   userData.photo = _profilePhoto;
 
   return (
     <ProfileView
+      token={token}
       userData={userData}
       onLogout={_onLogout}
       onAchievements={_onAchievements}
@@ -56,3 +75,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({}) => {
     />
   );
 };
+
+const mapStateToProps = (state: any) => {
+  return {
+    token: state.authReducer.authData.token || '',
+    userData: state.authReducer.authData.userData || {name: '', photo: ''},
+    isLoading: state.loadingReducer.isLoading || false,
+    isError: state.errorReducer.isError || false,
+    errorMessage: state.errorReducer.errorMessage || '',
+  };
+};
+
+export default connect(mapStateToProps)(ProfileScreen);

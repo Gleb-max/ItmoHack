@@ -2,15 +2,11 @@ const loading = (state = {}, action: any) => {
   switch (action.type) {
     case 'LOADING':
       return {
-        isAuthLoading: true,
-        isRatingLoading: true,
-        isProductsLoading: true,
+        isLoading: true,
       };
     case 'LOADING_CANCEL':
       return {
-        isAuthLoading: false,
-        isRatingLoading: false,
-        isProductsLoading: false,
+        isLoading: false,
       };
     default:
       return state;

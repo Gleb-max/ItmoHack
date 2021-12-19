@@ -20,4 +20,7 @@ export {SearchField} from './SearchField';
 export {BackButton} from './BackButton';
 export {ErrorAlert} from './ErrorAlert';
 export {ShopItemCard} from './ShopItemCard';
+export {EventItemCard} from './EventItemCard';
+export {NotificationItemCard} from './NotificationItemCard';
 export {RatingItemCard} from './RatingItemCard';
+export {AchievementCategoryCard} from './AchievementCategoryCard';

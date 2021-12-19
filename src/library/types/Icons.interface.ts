@@ -15,7 +15,13 @@ export type CommonIconName =
   | 'ic_arrow_left'
   | 'ic_error'
   | 'ic_flag'
-  | 'ic_notification';
+  | 'ic_notification'
+  | 'ic_add'
+  | 'ic_sport'
+  | 'ic_technial'
+  | 'ic_soft_skills'
+  | 'ic_humanities'
+  | 'ic_natural';
 
 export type TabBarIconName =
   | 'ic_tabbar_cursor'

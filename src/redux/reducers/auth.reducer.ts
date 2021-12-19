@@ -5,6 +5,7 @@ const authData = (state = {}, action: any) => {
     case 'AUTH_USER_SUCCESS':
       return {
         token: action.token,
+        userData: action.userData,
         isLoggedIn: true,
       };
     case 'AUTH_USER_FAIL':

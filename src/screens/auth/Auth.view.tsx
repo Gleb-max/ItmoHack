@@ -118,7 +118,10 @@ export const AuthView: React.FC<AuthViewProps> = ({
   const registerHandler = () => {
     const data = authFieldsContent.register;
     if (data.isuId && data.name && data.faculty && data.password) {
-      register(data);
+      if (data.password.length < 8) {
+        showError({message: 'Пароль должен состоять минимум из 8 символов!'});
+      }
+      else register(data);
     } else {
       requireFilling();
     }
