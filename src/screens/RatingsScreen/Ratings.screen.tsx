@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { RatingItem } from 'library/types/RatingItem.interface';
 import React from 'react';
 import { connect } from 'react-redux';
 import { errorCancel } from 'redux/actions';
@@ -21,6 +23,14 @@ export const RatingsScreen: React.FC<RatingsScreenProps> = ({
   errorMessage = '',
   faculties = [],
 }) => {
+  //navigation
+	const navigation = useNavigation();
+
+	//callbacks
+	const _onPressItem = React.useCallback((type: 'student' | 'faculty', item: RatingItem) => {
+		navigation.navigate('rating_item', {type: type, item: item});
+	}, [navigation]);
+
   return <RatingsView 
     token={token} 
     isLoading={isLoading} 
@@ -28,6 +38,7 @@ export const RatingsScreen: React.FC<RatingsScreenProps> = ({
     errorMessage={errorMessage}
     hideError={() => store.dispatch(errorCancel())}
     faculties={faculties}
+    onPressItem={_onPressItem}
   />;
 };
 

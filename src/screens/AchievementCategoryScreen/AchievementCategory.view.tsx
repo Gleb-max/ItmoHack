@@ -1,4 +1,6 @@
 import { apiConfig } from 'api/config';
+import { LoaderOverlay } from 'library/components';
+import { RalewayText } from 'library/components/atoms';
 import { AchievementCard } from 'library/components/molecules/AchievementCard';
 import { AchievementCategoryItem } from 'library/types/AchievementCategoryItem.interface';
 import React from 'react';
@@ -14,6 +16,7 @@ type AchievementCategoryViewProps = {
   category: number;
   token: string,
 	isLoading: boolean;
+  userData: {id: '', name: '', photo: ''}
 	isError: boolean;
 	errorMessage: string;
 	hideError: () => void;
@@ -21,7 +24,7 @@ type AchievementCategoryViewProps = {
 };
 
 export const AchievementCategoryView: React.FC<AchievementCategoryViewProps> = ({
-  category, token, isLoading, isError, errorMessage, hideError, onPressItem
+  category, token, isLoading, isError, errorMessage, hideError, onPressItem, userData,
 }) => {
   //effect
 	React.useEffect(() => {
@@ -39,12 +42,11 @@ export const AchievementCategoryView: React.FC<AchievementCategoryViewProps> = (
 	}
 
   const loadAchievements = () => {
-    fetch(`${apiConfig.baseUrl}api/Requests?Page=${page}&SearchType=${category}`, {headers: {Authorization: `Bearer ${token}`}})
+    fetch(`${apiConfig.baseUrl}api/Achievement?Page=${page}&Sphere=${category}&OwnerId=${userData.id}`, {headers: {Authorization: `Bearer ${token}`}})
           .then(response => response.json())
           .then(responseJson => {
-			      console.log(responseJson);
-			    // setData([...data, ...responseJson.achievementRequests]);
-            if (responseJson.advertisements.length !== 0) setPage(page + 1)
+			      setData([...data, ...responseJson.achievements]);
+            if (responseJson.achievements.length !== 0) setPage(page + 1)
             store.dispatch(loadingCancel());
           })
           .catch(err => {
@@ -65,6 +67,8 @@ export const AchievementCategoryView: React.FC<AchievementCategoryViewProps> = (
 	}, [data]);
   
   return (
+    <>
+    {isLoading && <LoaderOverlay isTransparent={true} size={'large'} />}
     <View style={styles.container}>
       <StatusBar
         barStyle={'dark-content'}
@@ -79,9 +83,19 @@ export const AchievementCategoryView: React.FC<AchievementCategoryViewProps> = (
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContainer}
         onEndReached={loadData}
+        ListEmptyComponent={() => {
+          return (
+            <RalewayText
+              type={'Semibold'}
+              size={'r3'}
+              style={styles.emptyText}>
+              Здесь пока пусто
+            </RalewayText>
+          )
+        }}
         onEndReachedThreshold ={0.1} 
     />
-  
     </View>
+    </>
   );
 };

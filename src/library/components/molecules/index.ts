@@ -23,4 +23,5 @@ export {ShopItemCard} from './ShopItemCard';
 export {EventItemCard} from './EventItemCard';
 export {NotificationItemCard} from './NotificationItemCard';
 export {RatingItemCard} from './RatingItemCard';
+export {PurchaseCard} from './PurchaseCard';
 export {AchievementCategoryCard} from './AchievementCategoryCard';

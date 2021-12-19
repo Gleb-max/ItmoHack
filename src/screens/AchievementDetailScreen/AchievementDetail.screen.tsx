@@ -61,4 +61,4 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-export default connect(mapStateToProps)(AchievementCategoryScreen);
+export default connect(mapStateToProps)(AchievementDetailScreen);

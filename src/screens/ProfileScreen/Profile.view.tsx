@@ -34,6 +34,7 @@ type ProfileViewProps = {
   };
   token: string;
   onAchievements: () => void;
+  onPurchases: () => void;
   onNotification: () => void;
   onLogout: () => void;
   setProfilePhoto: (value: string) => void;
@@ -46,6 +47,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onAchievements,
   setProfilePhoto,
   onNotification,
+  onPurchases,
 }) => {
   //effects
   React.useEffect(() => {
@@ -56,7 +58,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const data = {
     dataSets: [{
       values: [{value: 100}, {value: 110}, {value: 105}, {value: 115}, {value: 110}],
-      label: 'Наука',
       config: {
         color: processColor('#FF8C9D'),
 
@@ -77,8 +78,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     fetch(`${apiConfig.baseUrl}api/User/${userData.id}`, {headers: {Authorization: `Bearer ${token}`}})
         .then(response => response.json())
         .then(responseJson => {
-          console.log(responseJson)
-
 
           const data = {
               dataSets: [{
@@ -204,7 +203,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             ],
             drawValues: false,
           };
-          _setData(newData)
+          // _setData(newData)
 			    // store.dispatch(loadingCancel());
         })
         .catch(err => {
@@ -230,14 +229,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
   const xAxis = {
     valueFormatter: [],
-    // valueFormatter: ['Гуманитарные науки', 'Естесственные науки', 'Спорт', 'Технические науки', 'Софт скилы'],
+    // valueFormatter: ['Гуманитарные науки', 'Естесственные науки', 'Спорт', 'Технические науки', 'Софт скилы', 'grgrtggrtgrt', 'gergerger'],
   }
 
   const yAxis = {
     enabled: false,
   }
   const legend = {
-    enabled: true,
+    enabled: false,
     textSize: 14,
     wordWrapEnabled: true,
   }
@@ -271,6 +270,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             iconName={'ic_flag'}
             iconColor={'#fe7062'}
             onPress={onAchievements}
+            style={styles.functionButton}
+          />
+
+          <FunctionButtonItem
+            header={'Покупки'}
+            iconName={'ic_purchases'}
+            iconColor={'#fe7062'}
+            onPress={onPurchases}
             style={styles.functionButton}
           />
         </View>

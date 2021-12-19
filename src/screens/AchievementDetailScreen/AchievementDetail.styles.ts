@@ -4,6 +4,8 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 70,
+    paddingHorizontal: 22,
   },
   clinicCardsContainer: {
     marginTop: 'auto',
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
 	},
   flatListContainer: {
 		paddingTop: 27,
-		paddingHorizontal: 4,
+		paddingHorizontal: 20,
 	},
 });
 

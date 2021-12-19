@@ -26,6 +26,7 @@ import {EventDetailsNavigation} from 'screens/EventDetailsScreen';
 import {AddAchievementNavigation} from 'screens/AddAchievementScreen';
 import {AchievementCategoryNavigation} from 'screens/AchievementCategoryScreen';
 import {AchievementDetailNavigation} from 'screens/AchievementDetailScreen';
+import {PurchasesNavigation} from 'screens/PurchasesScreen';
 
 //components
 import {TabBarContainer} from 'library/components/molecules';
@@ -151,6 +152,7 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
       <MainNativeStack.Screen name={'add_achievement'} component={AddAchievementNavigation} />
       <MainNativeStack.Screen name={'achievement_category'} component={AchievementCategoryNavigation} />
       <MainNativeStack.Screen name={'achievement_item'} component={AchievementDetailNavigation} />
+      <MainNativeStack.Screen name={'purchases'} component={PurchasesNavigation} />
     </MainNativeStack.Navigator>
   );
 };

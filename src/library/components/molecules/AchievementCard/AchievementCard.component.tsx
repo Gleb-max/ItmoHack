@@ -10,71 +10,25 @@ import LinearGradient from 'react-native-linear-gradient';
 
 //styles
 import styles from './AchievementCard.styles';
+import { AchievementCategoryItem } from 'library/types/AchievementCategoryItem.interface';
 
 type AchievementCardProps = {
-  type: string;
+  item: AchievementCategoryItem;
   style?: StyleProp<ViewStyle>;
   onPress: (item: any) => void;
 };
 
 export const AchievementCard: React.FC<AchievementCardProps> = ({
-  type,
+  item,
   style,
   onPress,
 }) => {
-  const getNameByType = (achievementType: string) => {
-    switch (achievementType) {
-      case 'humanities':
-        return 'Гуманитарные';
-        break;
-      case 'natural':
-        return 'Естесственно-научные';
-        break;
-      case 'physical':
-        return 'Спортивные';
-        break;
-      case 'softSkills':
-        return 'Софт-скилы';
-        break;
-      case 'technical':
-        return 'Технические';
-        break;
-      default:
-        return 'Добавить';
-        break;
-    }
-  }
-
-  const getIconNameByType = (achievementType: string) => {
-    switch (achievementType) {
-      case 'humanities':
-        return 'ic_humanities';
-        break;
-      case 'natural':
-        return 'ic_natural';
-        break;
-      case 'physical':
-        return 'ic_sport';
-        break;
-      case 'softSkills':
-        return 'ic_soft_skills';
-        break;
-      case 'technical':
-        return 'ic_technial';
-        break;
-      default:
-        return 'ic_add';
-        break;
-    }
-  }
-
   return (
     <TouchableOpacity
 			style={[styles.container, style]}
 			onPress={() => onPress(item)}
 		>
-			<GilroyText size={'g5'} type={'Semibold'} styleText={styles.header}>{item.topic}</GilroyText>
-			<MontserratText style={styles.dateText} lines={2} size={'m3'} type={'Medium'}>{prettyDate(item.publishDate)}</MontserratText>
+			<GilroyText size={'g5'} type={'Semibold'} styleText={[styles.header, {color: item.accepted ? '#e03c3c' : '#77C66E'}]}>{item.name} - {item.points}</GilroyText>
 		</TouchableOpacity>
   );
 };

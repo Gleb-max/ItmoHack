@@ -40,9 +40,9 @@ export const FieldView: React.FC<FieldViewProps> = ({token, isLoading, isError, 
     fetch(`${apiConfig.baseUrl}api/Game/ref`, {headers: {Authorization: `Bearer ${token}`}})
       .then(response => response.json())
       .then(responseJson => {
-        store.dispatch(loadingCancel());
+        setUrl(responseJson.referenсe);
         _setIsError(false);
-        setUrl(responseJson.reference);
+        store.dispatch(loadingCancel());
       })
       .catch(err => {
         _setIsError(true);

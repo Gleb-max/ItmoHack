@@ -25,4 +25,5 @@ export {
   EventItemCard,
   NotificationItemCard,
   AchievementCategoryCard,
+  PurchaseCard,
 } from './molecules';

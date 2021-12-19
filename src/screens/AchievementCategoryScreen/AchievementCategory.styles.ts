@@ -22,6 +22,10 @@ const styles = StyleSheet.create({
 		paddingTop: 27,
 		paddingHorizontal: 4,
 	},
+  emptyText: {
+    marginTop: 20,
+    alignSelf: 'center',
+  },
 });
 
 export default styles;

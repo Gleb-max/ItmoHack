@@ -3,6 +3,7 @@ import * as Navigation from './Navigation.interface';
 import * as Shop from './ShopItem.interface';
 import * as Event from './EventItem.interface';
 import * as Rating from './RatingItem.interface';
+import * as Purchase from './PurchaseItem.interface';
 import * as Achievement from './AchievementCategoryItem.interface';
 
 export {
@@ -11,4 +12,5 @@ export {
   Shop,
   Rating,
   Achievement,
+  Purchase,
 };

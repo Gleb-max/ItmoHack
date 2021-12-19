@@ -1,5 +1,7 @@
 import { apiConfig } from 'api/config';
+import { LoaderOverlay } from 'library/components';
 import { AchievementCard } from 'library/components/molecules/AchievementCard';
+import { Achievement } from 'library/types';
 import { AchievementCategoryItem } from 'library/types/AchievementCategoryItem.interface';
 import React from 'react';
 import {View, StatusBar, FlatList} from 'react-native';
@@ -42,8 +44,7 @@ export const AchievementDetailView: React.FC<AchievementDetailViewProps> = ({
     fetch(`${apiConfig.baseUrl}api/Requests?Page=${page}&SearchType=${category}`, {headers: {Authorization: `Bearer ${token}`}})
           .then(response => response.json())
           .then(responseJson => {
-			      console.log(responseJson);
-			    // setData([...data, ...responseJson.achievementRequests]);
+			      setData([...data, ...responseJson.achievementRequests]);
             if (responseJson.advertisements.length !== 0) setPage(page + 1)
             store.dispatch(loadingCancel());
           })
@@ -65,6 +66,8 @@ export const AchievementDetailView: React.FC<AchievementDetailViewProps> = ({
 	}, [data]);
   
   return (
+    <>
+    {isLoading && <LoaderOverlay isTransparent={true} size={'large'} />}
     <View style={styles.container}>
       <StatusBar
         barStyle={'dark-content'}
@@ -81,7 +84,7 @@ export const AchievementDetailView: React.FC<AchievementDetailViewProps> = ({
         onEndReached={loadData}
         onEndReachedThreshold ={0.1} 
     />
-  
     </View>
+    </>
   );
 };

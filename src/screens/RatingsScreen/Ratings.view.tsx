@@ -18,6 +18,7 @@ type RatingsViewProps = {
   isError: boolean;
   errorMessage: string;
   hideError: () => void;
+  onPressItem: (type: 'student' | 'faculty', item: RatingItem) => void;
   faculties: {label: string, value: string} [];
 };
 
@@ -28,6 +29,7 @@ export const RatingsView: React.FC<RatingsViewProps> = ({
 	errorMessage, 
 	hideError,
 	faculties,
+	onPressItem,
 }) => {
 	//state
 	const [switchItem, setSwitchItem] = React.useState('students');
@@ -81,7 +83,7 @@ export const RatingsView: React.FC<RatingsViewProps> = ({
 			<RatingItemCard
 				index={index + 1}
 				item={item}
-				onPress={() => console.log(item)}
+				onPress={() => {onPressItem(switchItem === 'faculties' ? 'faculty' : 'student', item)}}
 				key={index}
 				style={styles.card} />
 		);

@@ -13,6 +13,7 @@ type AchievementCategoryScreenProps = {
   isLoading?: boolean;
   isError?: boolean;
   errorMessage?: string;
+  userData?: {id: '', name: '', photo: ''};
 };
 
 export const AchievementCategoryScreen: React.FC<AchievementCategoryScreenProps> = ({
@@ -20,14 +21,13 @@ export const AchievementCategoryScreen: React.FC<AchievementCategoryScreenProps>
   isLoading = false, 
   isError = false,
   errorMessage = '',
+  userData = {id: '', name: '', photo: ''},
 }) => {
   //navigation
 	const route = useRoute();
 	const params = route?.params as {category: string};
 	const category = params.category as string;
 
-  console.log("grtgtgrtgrggr")
-  console.log("grtgtgrtgrggr", category)
   const categoryIndex = {
     physical: 0,
     technical: 1,
@@ -49,11 +49,13 @@ export const AchievementCategoryScreen: React.FC<AchievementCategoryScreenProps>
       errorMessage={errorMessage} 
       hideError={() => store.dispatch(errorCancel())} 
       onPressItem={onPressItem}
+      userData={userData}
     />);
 };
 
 const mapStateToProps = (state: any) => {
   return {
+    userData: state.authReducer.authData.userData || {id: '', name: '', photo: ''},
     token: state.authReducer.authData.token || '',
     isLoading: state.loadingReducer.isLoading || false,
     isError: state.errorReducer.isError || false,

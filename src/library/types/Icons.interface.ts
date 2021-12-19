@@ -21,7 +21,8 @@ export type CommonIconName =
   | 'ic_technial'
   | 'ic_soft_skills'
   | 'ic_humanities'
-  | 'ic_natural';
+  | 'ic_natural'
+  | 'ic_purchases';
 
 export type TabBarIconName =
   | 'ic_tabbar_cursor'

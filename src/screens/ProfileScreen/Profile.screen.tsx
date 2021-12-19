@@ -49,6 +49,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 		navigation.navigate('achievements');
 	}, [navigation]);
 
+  const _onPurchases = React.useCallback(() => {
+		navigation.navigate('purchases');
+	}, [navigation]);
+
   const _onNotification = React.useCallback(() => {
 		navigation.navigate('notifications');
 	}, [navigation]);
@@ -70,6 +74,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
       userData={userData}
       onLogout={_onLogout}
       onAchievements={_onAchievements}
+      onPurchases={_onPurchases}
       setProfilePhoto={setProfilePhoto}
       onNotification={_onNotification}
     />
