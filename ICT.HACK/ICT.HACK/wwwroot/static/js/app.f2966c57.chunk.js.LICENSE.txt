@@ -1,0 +1,5 @@
+/**
+ * @author       Lewis Lane <lew@rotates.org>
+ * @copyright    2014 Lewis Lane (Rotates.org)
+ * @license      {@link http://opensource.org/licenses/MIT|MIT License}
+ */
