@@ -93,7 +93,7 @@ export default class Controls extends React.Component {
     this.game && this.game.onTouchesBegan(x, y);
 }
     onClick = ({ pageX: x, pageY: y}) => {
-        if (this.game.isMoving) return;
+        if (this.game.isMoving || this.showAlert) return;
         this.canMove(() => {
             this.isMoving = true;
             this.game && this.game.onClick(x, y, (ended) => {
