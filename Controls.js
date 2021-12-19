@@ -112,7 +112,7 @@ export default class Controls extends React.Component {
     }
     canMove = can => {
         this.api.canMove().then((res) => {
-            if (res) {
+            if (res.available) {
                 can(res);
             } else {
                 this.showAlert("Вы не можете ходит :()");
