@@ -70,8 +70,8 @@ class State {
       uri(Assets.sprites['object.png']),
       uri(Assets.sprites['object.json']),
     );
-    this.offset = {x: 0, y: 0};
-    this.chunkSize = {x: 0.5, y: 0.5};
+    this.offset = {x: 0.5, y: 0.5};
+    this.chunkSize = {x: 0.125, y: 0.125};
   };
 
   updateControls = ({ velocity }) => {
